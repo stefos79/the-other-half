@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Other Half — Stefanos Papadakis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=GFS+Didot&family=Inter:wght@400;500&display=swap">
+<style>
+:root{--bg:#000000;--fg:#EEEAE3;--mute:#9C978F;--line:#3A3835;--red:#E5392C;--acc:var(--fg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+img,video{display:block;max-width:100%}
+a{color:var(--fg)}
+.serif{font-family:'GFS Didot',Georgia,serif;font-weight:400}
+.label{font-size:11px;letter-spacing:.32em;color:var(--mute);text-transform:uppercase;margin:0}
+.snap{scroll-snap-align:start;scroll-snap-stop:always}
+.red{--acc:var(--red)}
+.gold{--acc:#E9A23B}
+.grain{position:fixed;inset:-50%;width:200%;height:200%;pointer-events:none;z-index:50;opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");animation:grain 1.2s steps(6) infinite}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}}
+
+/* Cover */
+.cover{position:relative;height:100svh;overflow:hidden;display:grid;grid-template-columns:1fr 1fr}
+.cover figure{margin:0;position:absolute;inset:0 0 0 38%}
+.cover figure img{width:100%;height:100%;object-fit:contain;object-position:100% 50%}
+.cover figure::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--bg) 0%,rgba(0,0,0,0) 35%)}
+.cover .inner{position:relative;z-index:2;padding:clamp(28px,6vw,96px);display:flex;flex-direction:column;justify-content:space-between;grid-column:1/-1}
+.cover h1{font-size:clamp(56px,10vw,170px);line-height:.92;margin:0;letter-spacing:-.02em}
+.cover h1 .half{display:inline-block;clip-path:inset(0 0 48% 0)}
+.cover .rule{width:72px;height:1px;background:var(--red);margin:32px 0 24px}
+.cover .sub{font-size:clamp(19px,2vw,26px);line-height:1.5;color:var(--mute);margin:0}
+.cover .creator{display:flex;flex-direction:column;gap:8px}
+.cover .creator .name{font-size:clamp(26px,2.6vw,38px);margin:0;letter-spacing:.01em}
+.cover .concept{font-size:clamp(14px,1.1vw,16px);line-height:1.65;color:var(--fg);opacity:.85;margin:20px 0 0;max-width:46ch}
+.begin{display:inline-flex;align-items:center;gap:12px;min-height:44px;font-size:11px;letter-spacing:.3em;color:var(--mute);text-decoration:none;align-self:flex-start}
+.begin:hover{color:var(--fg)}
+.cover .foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px 24px}
+.updated{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--red);margin:0}
+.toc{display:flex;flex-wrap:wrap;gap:0 24px;margin:20px 0 0;padding:0;list-style:none;max-width:720px}
+.toc a{display:inline-flex;align-items:center;min-height:44px;font-size:11px;letter-spacing:.26em;color:var(--mute);text-decoration:none}
+.toc a:hover{color:var(--fg)}
+.toc b{font-family:'GFS Didot',Georgia,serif;font-weight:400;font-size:18px;letter-spacing:0;color:var(--fg);margin-right:9px}
+.toc a.red b{color:var(--red)}
+.toc a.gold b{color:#E9A23B}
+
+/* Contents */
+.contents{height:100svh;display:flex;align-items:center;justify-content:center;padding:24px clamp(24px,8vw,140px)}
+.contents-in{width:min(760px,100%);display:flex;flex-direction:column;gap:24px}
+.clist{list-style:none;margin:0;padding:0;columns:2;column-gap:56px}
+.clist li{break-inside:avoid;border-top:1px solid #1E1D1B}
+.clist a{display:grid;grid-template-columns:48px 1fr auto;align-items:baseline;gap:8px;min-height:44px;padding:8px 0;text-decoration:none;color:var(--fg)}
+.clist b{font-weight:400;font-size:20px;color:var(--acc)}
+.clist span{font-size:clamp(15px,1.3vw,18px)}
+.clist i{font-style:normal;font-size:12px;color:var(--mute)}
+.clist a:hover span{color:var(--acc)}
+@media (max-width:820px){.contents-in{gap:10px}.clist{columns:1}.clist a{min-height:34px;padding:2px 0}.clist b{font-size:16px}.clist span{font-size:14px}}
+
+/* Chapter */
+.chapter{height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;gap:22px;position:relative}
+.chapter .num{font-size:clamp(110px,18vw,260px);line-height:.85;margin:0;color:var(--acc)}
+.chapter .name{font-size:13px;font-weight:500;letter-spacing:.5em;margin:0;padding-left:.5em}
+.chapter .epi{font-size:clamp(20px,2.2vw,28px);color:var(--mute);margin:8px 0 0;max-width:28ch;line-height:1.45}
+.chapter::after{content:"";position:absolute;bottom:56px;left:50%;width:1px;height:56px;background:linear-gradient(var(--acc),transparent)}
+
+/* Plate: one work, one screen */
+.plate{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);height:100svh;overflow:hidden}
+.plate figure{margin:clamp(16px,3vw,48px) 0;position:relative;overflow:hidden}
+.plate figure img,.plate figure video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 50% !important}
+
+.plate .text{display:flex;flex-direction:column;justify-content:center;padding:clamp(28px,6vw,110px);gap:22px}
+.plate.rev{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)}
+.plate.rev figure{order:2}
+.plate:not(.rev) .text{padding-right:max(96px,6vw)}
+.no{font-size:12px;letter-spacing:.3em;margin:0;color:var(--acc)}
+.no span{color:var(--mute)}
+.work{font-size:13px;font-weight:500;letter-spacing:.32em;text-transform:uppercase;margin:0}
+.caption{font-size:clamp(28px,2.9vw,44px);line-height:1.35;margin:10px 0 18px;max-width:17ch;text-wrap:balance}
+.song{display:grid;grid-template-columns:auto 1fr;align-items:baseline;gap:6px 16px;padding-top:22px;border-top:1px solid var(--line);max-width:340px}
+.song .label{grid-row:1/3}
+.song .artist{font-size:16px;margin:0}
+.song .title{font-size:16px;color:var(--mute);margin:0}
+.listen{grid-column:2;justify-self:start;display:inline-flex;align-items:center;gap:10px;margin-top:12px;padding:12px 18px;min-height:44px;border:1px solid var(--line);border-radius:999px;font-size:12px;letter-spacing:.16em;text-decoration:none;color:var(--fg);transition:border-color .2s,background .2s,color .2s}
+.listen:hover{border-color:var(--acc);color:var(--acc)}
+.listen svg{width:14px;height:14px}
+
+/* Side index */
+.rail{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;gap:2px;opacity:0;transition:opacity .4s}
+.rail.on{opacity:1}
+.rail a{position:relative;display:flex;align-items:center;justify-content:center;min-height:min(40px,5.2svh);min-width:44px;text-decoration:none;color:var(--mute)}
+.rail a span{font-size:15px;width:28px;text-align:center}
+.rail a em{position:absolute;right:100%;font-style:normal;font-size:10px;letter-spacing:.28em;opacity:0;transform:translateX(6px);transition:opacity .25s,transform .25s;white-space:nowrap;pointer-events:none;background:var(--bg);padding:4px 8px}
+.rail a:hover em,.rail a:focus-visible em{opacity:1;transform:none}
+.rail a[aria-current]{color:var(--fg)}
+.rail a.red[aria-current]{color:var(--red)}
+.rail a.gold[aria-current]{color:#E9A23B}
+
+
+/* About */
+.about{height:100svh;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);overflow:hidden}
+.about-img{margin:0;position:relative;overflow:hidden}
+.about-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 50%}
+.about-in{max-width:620px;display:flex;flex-direction:column;justify-content:center;gap:20px;padding:24px clamp(28px,6vw,110px)}
+.about h2{font-size:clamp(44px,6vw,84px);line-height:1;margin:0}
+.about .rule{width:72px;height:1px;background:var(--red)}
+.about .lead{font-size:clamp(22px,2.4vw,32px);line-height:1.4;margin:0}
+.about p:not(.lead):not(.label){font-size:clamp(15px,1.15vw,17px);line-height:1.7;color:var(--mute);margin:0;max-width:60ch}
+
+/* Outro */
+.outro{height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;gap:30px;position:relative}
+.outro p.serif{font-size:clamp(30px,3.6vw,52px);line-height:1.35;margin:0;max-width:20ch}
+.outro .rule{width:72px;height:1px;background:var(--red)}
+.back{display:inline-flex;align-items:center;min-height:44px;font-size:11px;letter-spacing:.3em;color:var(--mute);text-decoration:none}
+.back:hover{color:var(--fg)}
+.outro footer{position:absolute;left:0;right:0;bottom:0;padding:24px clamp(28px,6vw,96px);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;border-top:1px solid #1E1D1B;font-size:12px;color:var(--mute)}
+
+.copy{margin:0;font-size:12px;line-height:1.6;color:var(--mute);max-width:80ch}
+.copy b{font-weight:500;color:var(--fg)}
+
+/* Reveal */
+.js .r{opacity:0;transform:translateY(16px);transition:opacity 1s ease,transform 1s ease}
+.js .in .r,.js .r.in{opacity:1;transform:none}
+.js .in .r:nth-child(2){transition-delay:.12s} .js .in .r:nth-child(3){transition-delay:.24s} .js .in .r:nth-child(4){transition-delay:.36s}
+.js figure.r{transform:none;transition:opacity 1.4s ease}
+@media (prefers-reduced-motion:reduce){.js .r{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}.grain{animation:none}.plate.seen figure img,.plate.seen figure video{transform:none}}
+
+/* Phone */
+@media (max-width:820px){
+  .about{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}
+  .about-img img{object-fit:contain;object-position:50% 100%}
+  .about-in{padding:22px 22px 30px;gap:10px}
+  .about h2{font-size:34px}
+  .about .lead{font-size:19px}
+  .about p:not(.lead):not(.label){font-size:14px;line-height:1.55}
+  .rail{display:none}
+  .cover{grid-template-columns:1fr}
+  .cover figure{inset:0}
+  .cover figure img{object-position:85% 30%;opacity:.55}
+  .cover figure::after{background:linear-gradient(0deg,var(--bg) 8%,rgba(0,0,0,.2) 60%)}
+  .plate,.plate.rev{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}
+  .plate.rev figure{order:0}
+  .plate .text{padding:22px 22px 30px;gap:10px}
+  .caption{font-size:clamp(20px,5.6vw,26px);max-width:none;margin:4px 0 8px}
+  .work{font-size:11px}
+  .song{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding-top:12px;max-width:none}
+  .song .label{display:none}
+  .song .artist,.song .title{font-size:14px}
+  .listen{margin:4px 0 0 auto;padding:10px 16px}
+  .chapter::after{bottom:36px}
+}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<nav class="rail" aria-label="Chapters">
+    <a href="#silence" data-for="silence" class=""><span class="serif">I</span><em>SILENCE</em></a>
+    <a href="#fragments" data-for="fragments" class=""><span class="serif">II</span><em>FRAGMENTS</em></a>
+    <a href="#halves" data-for="halves" class=""><span class="serif">III</span><em>HALVES</em></a>
+    <a href="#inner-landscapes" data-for="inner-landscapes" class=""><span class="serif">IV</span><em>INNER LANDSCAPES</em></a>
+    <a href="#stage" data-for="stage" class=""><span class="serif">V</span><em>STAGE</em></a>
+    <a href="#the-way" data-for="the-way" class=""><span class="serif">VI</span><em>THE EMPTY HAND</em></a>
+    <a href="#stone" data-for="stone" class=""><span class="serif">VII</span><em>MEMORY OF STONE</em></a>
+    <a href="#sacred-stone" data-for="sacred-stone" class=""><span class="serif">VIII</span><em>SACRED STONE</em></a>
+    <a href="#strangers" data-for="strangers" class=""><span class="serif">IX</span><em>CITY OF STRANGERS</em></a>
+    <a href="#danube" data-for="danube" class=""><span class="serif">X</span><em>DANUBE</em></a>
+    <a href="#storm" data-for="storm" class=""><span class="serif">XI</span><em>THE STORM</em></a>
+    <a href="#red-thread" data-for="red-thread" class=""><span class="serif">XII</span><em>THE RED THREAD</em></a>
+    <a href="#red-summer" data-for="red-summer" class=""><span class="serif">XIII</span><em>RED SUMMER</em></a>
+    <a href="#full-colour" data-for="full-colour" class=""><span class="serif">XIV</span><em>FULL COLOUR</em></a>
+    <a href="#golden-hour" data-for="golden-hour" class=""><span class="serif">XV</span><em>GOLDEN HOUR</em></a>
+    <a href="#breath" data-for="breath" class=""><span class="serif">XVI</span><em>BREATH</em></a>
+</nav>
+
+<header class="cover snap" id="top">
+  <figure><img src="img/woman-half.jpg" alt=""></figure>
+  <div class="inner">
+    <div class="creator">
+      <p class="label">A photographic exhibition by</p>
+      <p class="name serif">Stefanos Papadakis</p>
+    </div>
+    <div>
+      <h1 class="serif">The Other<br>Half</h1>
+      <div class="rule"></div>
+      <p class="sub serif">The image shows only half.<br>The rest is heard.</p>
+      <p class="concept">117 photographs and moving images in 16 chapters. Every work has its own screen, its own words and its own song. Look at the picture, press play, then look again.</p>
+    </div>
+    <div class="foot">
+    <a class="begin" href="#contents">SCROLL TO BEGIN <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1v10M1.5 6.5 6 11l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a>
+    <p class="updated">Last updated · 8 November 2026</p>
+    </div>
+  </div>
+</header>
+
+<section class="contents snap" id="contents">
+  <div class="contents-in">
+    <p class="label">Contents</p>
+    <ol class="clist">
+      <li><a href="#silence" class=""><b class="serif">I</b><span>Silence</span><i>5</i></a></li>
+      <li><a href="#fragments" class=""><b class="serif">II</b><span>Fragments</span><i>3</i></a></li>
+      <li><a href="#halves" class=""><b class="serif">III</b><span>Halves</span><i>10</i></a></li>
+      <li><a href="#inner-landscapes" class=""><b class="serif">IV</b><span>Inner Landscapes</span><i>7</i></a></li>
+      <li><a href="#stage" class=""><b class="serif">V</b><span>Stage</span><i>3</i></a></li>
+      <li><a href="#the-way" class=""><b class="serif">VI</b><span>The Empty Hand</span><i>5</i></a></li>
+      <li><a href="#stone" class=""><b class="serif">VII</b><span>Memory of Stone</span><i>5</i></a></li>
+      <li><a href="#sacred-stone" class=""><b class="serif">VIII</b><span>Sacred Stone</span><i>7</i></a></li>
+      <li><a href="#strangers" class=""><b class="serif">IX</b><span>City of Strangers</span><i>12</i></a></li>
+      <li><a href="#danube" class=""><b class="serif">X</b><span>Danube</span><i>4</i></a></li>
+      <li><a href="#storm" class=""><b class="serif">XI</b><span>The Storm</span><i>7</i></a></li>
+      <li><a href="#red-thread" class="red"><b class="serif">XII</b><span>The Red Thread</span><i>13</i></a></li>
+      <li><a href="#red-summer" class="red"><b class="serif">XIII</b><span>Red Summer</span><i>8</i></a></li>
+      <li><a href="#full-colour" class="gold"><b class="serif">XIV</b><span>Full Colour</span><i>16</i></a></li>
+      <li><a href="#golden-hour" class="gold"><b class="serif">XV</b><span>Golden Hour</span><i>9</i></a></li>
+      <li><a href="#breath" class=""><b class="serif">XVI</b><span>Breath</span><i>3</i></a></li>
+      <li><a href="#photographer"><b class="serif">·</b><span>Behind the lens</span></a></li>
+    </ol>
+  </div>
+</section>
+
+<main>
+  <section class="chapter snap " id="silence" data-ch="silence">
+    <p class="num serif r">I</p>
+    <h2 class="name r">SILENCE</h2>
+    <p class="epi serif r">What is not said is not lost. It waits.</p>
+  </section>
+  <section class="plate snap " data-ch="silence" aria-label="What He Heard">
+    <figure class="r"><img src="img/blur-half.jpg" alt="Half of a man’s face, the ear blurred as if in motion" style="object-position:20% 40%"></figure>
+    <div class="text">
+      <p class="no r">No 01<span> / 117</span></p>
+      <h3 class="work r">What He Heard</h3>
+      <p class="caption serif r">The face stays. What it heard begins to blur.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Leonard Cohen</p><p class="title">You Want It Darker</p><a class="listen" href="https://open.spotify.com/search/Leonard%20Cohen%20You%20Want%20It%20Darker" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="silence" aria-label="Half a Gaze">
+    <figure class="r"><img src="img/hand.jpg" alt="A man hides half his face with his hand; only one eye is visible" style="object-position:70% 35%"></figure>
+    <div class="text">
+      <p class="no r">No 02<span> / 117</span></p>
+      <h3 class="work r">Half a Gaze</h3>
+      <p class="caption serif r">The hand hides what it can. The eye gives away the rest.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Massive Attack</p><p class="title">Teardrop</p><a class="listen" href="https://open.spotify.com/search/Massive%20Attack%20Teardrop" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="silence" aria-label="Chorus">
+    <figure class="r"><img src="img/voices.jpg" alt="A man with his hands on his face, surrounded by blurred shouting faces" style="object-position:50% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 03<span> / 117</span></p>
+      <h3 class="work r">Chorus</h3>
+      <p class="caption serif r">All the voices speak at once. Only one doesn’t shout — that is the one to listen to.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Radiohead</p><p class="title">Everything In Its Right Place</p><a class="listen" href="https://open.spotify.com/search/Radiohead%20Everything%20In%20Its%20Right%20Place" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="silence" aria-label="What Was Never Said">
+    <figure class="r"><img src="img/silence.jpg" alt="A man covers his mouth with both hands, looking straight into the lens" style="object-position:50% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 04<span> / 117</span></p>
+      <h3 class="work r">What Was Never Said</h3>
+      <p class="caption serif r">The hands close the mouth. The eyes never got the order.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Simon &amp; Garfunkel</p><p class="title">The Sound of Silence</p><a class="listen" href="https://open.spotify.com/search/Simon%20Garfunkel%20The%20Sound%20of%20Silence" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="silence" aria-label="Fallen Leaves">
+    <figure class="r"><img src="img/fallen-leaves.jpg" alt="Children walk away across a floor of thousands of iron faces with open mouths in a concrete corridor" style="object-position:50% 60%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 05<span> / 117</span></p>
+      <h3 class="work r">Fallen Leaves</h3>
+      <p class="caption serif r">Thousands of faces with open mouths, and not a sound. The children walk on softly, as if they understood.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Arvo Pärt</p><p class="title">Spiegel im Spiegel (Cello)</p><a class="listen" href="https://open.spotify.com/search/Arvo%20Part%20Spiegel%20im%20Spiegel%20cello" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="chapter snap " id="fragments" data-ch="fragments">
+    <p class="num serif r">II</p>
+    <h2 class="name r">FRAGMENTS</h2>
+    <p class="epi serif r">What breaks does not stop reflecting.</p>
+  </section>
+  <section class="plate snap  rev" data-ch="fragments" aria-label="Mirror">
+    <figure class="r"><img src="img/shard.jpg" alt="A hand holds a broken shard of mirror showing half a man’s face" style="object-position:50% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 06<span> / 117</span></p>
+      <h3 class="work r">Mirror</h3>
+      <p class="caption serif r">One piece of glass is enough. You don’t need the whole mirror to see the truth.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Philip Glass</p><p class="title">Metamorphosis One</p><a class="listen" href="https://open.spotify.com/search/Philip%20Glass%20Metamorphosis%20One" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="fragments" aria-label="Collage">
+    <figure class="r"><img src="img/collage.jpg" alt="A woman’s portrait cut into pieces that don’t quite align" style="object-position:45% 35%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 07<span> / 117</span></p>
+      <h3 class="work r">Collage</h3>
+      <p class="caption serif r">The days cut her into pieces. She smiles, because she knows how to put herself back together.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Max Richter</p><p class="title">On the Nature of Daylight</p><a class="listen" href="https://open.spotify.com/search/Max%20Richter%20On%20the%20Nature%20of%20Daylight" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="fragments" aria-label="The Shadow Behind Him">
+    <figure class="r"><img src="img/shadow-man.jpg" alt="A man in a top hat and long coat stands in a spotlight, his shadow behind him spreading its arms" style="object-position:50% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 08<span> / 117</span></p>
+      <h3 class="work r">The Shadow Behind Him</h3>
+      <p class="caption serif r">He stands still. His shadow has other plans.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Nick Cave &amp; The Bad Seeds</p><p class="title">Red Right Hand</p><a class="listen" href="https://open.spotify.com/search/Nick%20Cave%20Red%20Right%20Hand" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="chapter snap " id="halves" data-ch="halves">
+    <p class="num serif r">III</p>
+    <h2 class="name r">HALVES</h2>
+    <p class="epi serif r">No one shows themselves whole. Not even to themselves.</p>
+  </section>
+  <section class="plate snap " data-ch="halves" aria-label="Light from the Right">
+    <figure class="r"><img src="img/woman-half.jpg" alt="Half of a woman’s face in light at the right edge of the frame" style="object-position:85% 30%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 09<span> / 117</span></p>
+      <h3 class="work r">Light from the Right</h3>
+      <p class="caption serif r">Light touches her only where she allows it. The rest she keeps for those who stayed.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Ólafur Arnalds</p><p class="title">Saman</p><a class="listen" href="https://open.spotify.com/search/Olafur%20Arnalds%20Saman" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="halves" aria-label="One Eye">
+    <figure class="r"><img src="img/one-eye.jpg" alt="Half of a woman’s face at the right edge of the frame, one eye catching the light" style="object-position:90% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 10<span> / 117</span></p>
+      <h3 class="work r">One Eye</h3>
+      <p class="caption serif r">One eye is enough to say she remembers.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">London Grammar</p><p class="title">Strong</p><a class="listen" href="https://open.spotify.com/search/London%20Grammar%20Strong" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="halves" aria-label="Out of the Dark">
+    <figure class="r"><img src="img/front.jpg" alt="A woman’s face emerging from complete darkness" style="object-position:50% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 11<span> / 117</span></p>
+      <h3 class="work r">Out of the Dark</h3>
+      <p class="caption serif r">You didn’t need light to see her. You needed to look.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Portishead</p><p class="title">Glory Box</p><a class="listen" href="https://open.spotify.com/search/Portishead%20Glory%20Box" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="halves" aria-label="The Promise">
+    <figure class="r"><img src="img/boy-half.jpg" alt="Half of a boy’s face emerging from black" style="object-position:10% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 12<span> / 117</span></p>
+      <h3 class="work r">The Promise</h3>
+      <p class="caption serif r">He isn’t looking at the lens. He’s looking at you — waiting to see if you’ll keep your word.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Eleni Karaindrou</p><p class="title">Ulysses’ Gaze</p><a class="listen" href="https://open.spotify.com/search/Eleni%20Karaindrou%20Ulysses%27%20Gaze" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="halves" aria-label="Half a Smile">
+    <figure class="r"><img src="img/girl-half.jpg" alt="Half of a girl’s face with a faint smile, emerging from black" style="object-position:10% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 13<span> / 117</span></p>
+      <h3 class="work r">Half a Smile</h3>
+      <p class="caption serif r">Half a smile is a whole secret. She is saving the other half for later.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Yann Tiersen</p><p class="title">Comptine d’un autre été</p><a class="listen" href="https://open.spotify.com/search/Yann%20Tiersen%20Comptine%20d%27un%20autre%20ete" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="halves" aria-label="Sepia">
+    <figure class="r"><img src="img/sepia.jpg" alt="Half of a man’s face in sepia, one eye on the lens" style="object-position:80% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 14<span> / 117</span></p>
+      <h3 class="work r">Sepia</h3>
+      <p class="caption serif r">The years don’t hide in the light. They sit quietly in the corners of the eye.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Johnny Cash</p><p class="title">Hurt</p><a class="listen" href="https://open.spotify.com/search/Johnny%20Cash%20Hurt" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="halves" aria-label="The Gap">
+    <figure class="r"><img src="img/curtain.jpg" alt="A woman looks out through the opening of a heavy curtain" style="object-position:52% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 15<span> / 117</span></p>
+      <h3 class="work r">The Gap</h3>
+      <p class="caption serif r">She isn’t hiding. She’s waiting to see who dares to open it.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Agnes Obel</p><p class="title">Riverside</p><a class="listen" href="https://open.spotify.com/search/Agnes%20Obel%20Riverside" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="halves" aria-label="Shadow with a Body">
+    <figure class="r"><img src="img/torso.jpg" alt="A blurred male torso in darkness" style="object-position:40% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 16<span> / 117</span></p>
+      <h3 class="work r">Shadow with a Body</h3>
+      <p class="caption serif r">The body remembers what the mind keeps trying to forget.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Hans Zimmer</p><p class="title">Time</p><a class="listen" href="https://open.spotify.com/search/Hans%20Zimmer%20Time" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="halves" aria-label="Shoulder">
+    <figure class="r"><img src="img/shoulder.jpg" alt="A man’s shoulder and chest in side light, his face cut by the frame" style="object-position:80% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 17<span> / 117</span></p>
+      <h3 class="work r">Shoulder</h3>
+      <p class="caption serif r">Half in light, half in shadow. Strength doesn’t shout — it waits.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Woodkid</p><p class="title">Iron</p><a class="listen" href="https://open.spotify.com/search/Woodkid%20Iron" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="halves" aria-label="Breathe In">
+    <figure class="r"><img src="img/blonde-profile.jpg" alt="A blonde woman in profile, eyes closed, hand at her throat" style="object-position:65% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 18<span> / 117</span></p>
+      <h3 class="work r">Breathe In</h3>
+      <p class="caption serif r">She closes her eyes to hear better.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Daughter</p><p class="title">Youth</p><a class="listen" href="https://open.spotify.com/search/Daughter%20Youth" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="chapter snap " id="inner-landscapes" data-ch="inner-landscapes">
+    <p class="num serif r">IV</p>
+    <h2 class="name r">INNER LANDSCAPES</h2>
+    <p class="epi serif r">Some places are not visited. They are lived in.</p>
+  </section>
+  <section class="plate snap " data-ch="inner-landscapes" aria-label="Sea">
+    <figure class="r"><video src="img/sea.mp4" poster="img/sea-poster.jpg" autoplay muted loop playsinline aria-label="Video: a woman in profile, a stormy coastline moving inside her silhouette" style="object-position:50% 35%"></video></figure>
+    <div class="text">
+      <p class="no r">No 19<span> / 117</span></p>
+      <h3 class="work r">Sea</h3>
+      <p class="caption serif r">Every silence of hers has a wave in it.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Mikis Theodorakis</p><p class="title">Árnisi</p><a class="listen" href="https://open.spotify.com/search/Theodorakis%20Arnisi" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="inner-landscapes" aria-label="City">
+    <figure class="r"><video src="img/city.mp4" poster="img/city-poster.jpg" autoplay muted loop playsinline aria-label="Video: a smiling woman’s face, a city of spires and streets moving inside it" style="object-position:55% 35%"></video></figure>
+    <div class="text">
+      <p class="no r">No 20<span> / 117</span></p>
+      <h3 class="work r">City</h3>
+      <p class="caption serif r">She carries a city inside her. She smiles because she knows the way back.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Vangelis</p><p class="title">Blade Runner Blues</p><a class="listen" href="https://open.spotify.com/search/Vangelis%20Blade%20Runner%20Blues" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="inner-landscapes" aria-label="Dust">
+    <figure class="r"><video src="img/dust.mp4" poster="img/dust-poster.jpg" autoplay muted loop playsinline aria-label="Video: a girl’s face with closed eyes dissolving into dust and forming again" style="object-position:50% 40%"></video></figure>
+    <div class="text">
+      <p class="no r">No 21<span> / 117</span></p>
+      <h3 class="work r">Dust</h3>
+      <p class="caption serif r">She doesn’t disappear. She scatters — and gathers again whenever someone looks.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Jóhann Jóhannsson</p><p class="title">Flight from the City</p><a class="listen" href="https://open.spotify.com/search/Johann%20Johannsson%20Flight%20from%20the%20City" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="inner-landscapes" aria-label="Ink">
+    <figure class="r"><video src="img/ink.mp4" poster="img/ink-poster.jpg" autoplay muted loop playsinline aria-label="Video: dark ink spreads like veins across a man’s shoulder and arm" style="object-position:50% 40%"></video></figure>
+    <div class="text">
+      <p class="no r">No 22<span> / 117</span></p>
+      <h3 class="work r">Ink</h3>
+      <p class="caption serif r">What marks us doesn’t always leave a wound. Sometimes it leaves a map.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Ramin Djawadi</p><p class="title">Light of the Seven</p><a class="listen" href="https://open.spotify.com/search/Ramin%20Djawadi%20Light%20of%20the%20Seven" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="inner-landscapes" aria-label="Kintsugi">
+    <figure class="r"><video src="img/fracture.mp4" poster="img/fracture-poster.jpg" autoplay muted loop playsinline aria-label="Video: a woman with eyes closed, head tilted back; cracks of light spread across her face, then her face becomes a man’s" style="object-position:50% 40%"></video></figure>
+    <div class="text">
+      <p class="no r">No 23<span> / 117</span></p>
+      <h3 class="work r">Kintsugi</h3>
+      <p class="caption serif r">The cracks didn’t break her. They let the light find a way in, and showed who was underneath.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Ólafur Arnalds &amp; Alice Sara Ott</p><p class="title">Reminiscence</p><a class="listen" href="https://open.spotify.com/search/Olafur%20Arnalds%20Alice%20Sara%20Ott%20Reminiscence" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="inner-landscapes" aria-label="Awakening">
+    <figure class="r"><video src="img/awakening.mp4" poster="img/awakening-poster.jpg" autoplay muted loop playsinline aria-label="Video: an old man’s face slowly turns into a younger man’s, the eye opening in the dark" style="object-position:40% 45%"></video></figure>
+    <div class="text">
+      <p class="no r">No 24<span> / 117</span></p>
+      <h3 class="work r">Awakening</h3>
+      <p class="caption serif r">The eyes open slowly, as if they had been somewhere else for a long time.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Max Richter</p><p class="title">November</p><a class="listen" href="https://open.spotify.com/search/Max%20Richter%20November" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="inner-landscapes" aria-label="Wind">
+    <figure class="r"><img src="img/wind.jpg" alt="A blonde woman, eyes closed, her hair carried by the wind" style="object-position:70% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 25<span> / 117</span></p>
+      <h3 class="work r">Wind</h3>
+      <p class="caption serif r">The wind takes whatever isn’t held. She holds on to nothing.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Cigarettes After Sex</p><p class="title">Apocalypse</p><a class="listen" href="https://open.spotify.com/search/Cigarettes%20After%20Sex%20Apocalypse" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="chapter snap " id="stage" data-ch="stage">
+    <p class="num serif r">V</p>
+    <h2 class="name r">STAGE</h2>
+    <p class="epi serif r">The loudest place on earth, and still the quietest moment.</p>
+  </section>
+  <section class="plate snap  rev" data-ch="stage" aria-label="Encore">
+    <figure class="r"><img src="img/concert.jpg" alt="A singer in silhouette on a stage, a crowd of heads in the foreground" style="object-position:50% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 26<span> / 117</span></p>
+      <h3 class="work r">Encore</h3>
+      <p class="caption serif r">Ten thousand voices sing his words back to him. For once, he just listens.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Moderat</p><p class="title">A New Error</p><a class="listen" href="https://open.spotify.com/search/Moderat%20A%20New%20Error" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="stage" aria-label="The Giant on the Screen">
+    <figure class="r"><img src="img/concert-face.jpg" alt="A huge black-and-white face on the stage screen, the performers small beneath it" style="object-position:50% 60%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 27<span> / 117</span></p>
+      <h3 class="work r">The Giant on the Screen</h3>
+      <p class="caption serif r">On the screen, a face larger than the stage. Below it, the man who sings his story.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Bonobo</p><p class="title">Kerala</p><a class="listen" href="https://open.spotify.com/search/Bonobo%20Kerala" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="stage" aria-label="Standing Still">
+    <figure class="r"><img src="img/concert-beams.jpg" alt="A performer stands motionless in silhouette under three beams of light, phones raised in the crowd" style="object-position:50% 55%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 28<span> / 117</span></p>
+      <h3 class="work r">Standing Still</h3>
+      <p class="caption serif r">Three beams of light, a thousand phones, and one man standing still enough to hear them.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Jon Hopkins</p><p class="title">Open Eye Signal</p><a class="listen" href="https://open.spotify.com/search/Jon%20Hopkins%20Open%20Eye%20Signal" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="chapter snap " id="the-way" data-ch="the-way">
+    <p class="num serif r">VI</p>
+    <h2 class="name r">THE EMPTY HAND</h2>
+    <p class="epi serif r">Karate: the empty hand. You arrive with nothing, and leave with yourself.</p>
+  </section>
+  <section class="plate snap " data-ch="the-way" aria-label="Before">
+    <figure class="r"><img src="img/dojo-stance.jpg" alt="A karateka in a deep stance in a quiet dojo, a straw target beside him under a single fluorescent light" style="object-position:35% 70%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 29<span> / 117</span></p>
+      <h3 class="work r">Before</h3>
+      <p class="caption serif r">Before every movement there is a silence. That is where the real training happens.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Ryuichi Sakamoto</p><p class="title">Solari</p><a class="listen" href="https://open.spotify.com/search/Ryuichi%20Sakamoto%20Solari" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="the-way" aria-label="Kata">
+    <figure class="r"><img src="img/dojo-kata.jpg" alt="A man in a white gi and black belt crosses his arms in a low stance, facing the lens" style="object-position:40% 60%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 30<span> / 117</span></p>
+      <h3 class="work r">Kata</h3>
+      <p class="caption serif r">The same movements, a thousand times. Not to remember them — to forget you are doing them.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Kodo</p><p class="title">O-Daiko</p><a class="listen" href="https://open.spotify.com/search/Kodo%20O-Daiko" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="the-way" aria-label="Kiai">
+    <figure class="r"><img src="img/dojo-kick.jpg" alt="A karateka in mid-air delivers a flying kick to a heavy bag" style="object-position:50% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 31<span> / 117</span></p>
+      <h3 class="work r">Kiai</h3>
+      <p class="caption serif r">For one moment, everything he is goes into a single point. Then the floor returns.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Two Steps from Hell</p><p class="title">Heart of Courage</p><a class="listen" href="https://open.spotify.com/search/Two%20Steps%20from%20Hell%20Heart%20of%20Courage" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="the-way" aria-label="Against Gravity">
+    <figure class="r"><img src="img/dojo-strike.jpg" alt="Seen from below, a man in a karate shirt flies into a kick against a hanging bag" style="object-position:40% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 32<span> / 117</span></p>
+      <h3 class="work r">Against Gravity</h3>
+      <p class="caption serif r">The bag doesn’t fight back. That is exactly why it teaches so much.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Hans Zimmer</p><p class="title">Rise</p><a class="listen" href="https://open.spotify.com/search/Hans%20Zimmer%20Rise%20Dark%20Knight" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="the-way" aria-label="Speed">
+    <figure class="r"><img src="img/dojo-blur.jpg" alt="A high kick blurred by motion, the foot sharp, the body dissolving behind it" style="object-position:50% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 33<span> / 117</span></p>
+      <h3 class="work r">Speed</h3>
+      <p class="caption serif r">The camera saw the foot. Everything else had already moved on.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Ryoji Ikeda</p><p class="title">data.matrix</p><a class="listen" href="https://open.spotify.com/search/Ryoji%20Ikeda%20data%20matrix" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="chapter snap " id="stone" data-ch="stone">
+    <p class="num serif r">VII</p>
+    <h2 class="name r">MEMORY OF STONE</h2>
+    <p class="epi serif r">Stone forgets nothing. It simply stops talking.</p>
+  </section>
+  <section class="plate snap  rev" data-ch="stone" aria-label="The Two of Them">
+    <figure class="r"><img src="img/statues.jpg" alt="Two ancient marble statues side by side; the woman’s face is worn away" style="object-position:50% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 34<span> / 117</span></p>
+      <h3 class="work r">The Two of Them</h3>
+      <p class="caption serif r">Two thousand years side by side. She lost her face; he never stopped looking ahead.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Arvo Pärt</p><p class="title">Spiegel im Spiegel</p><a class="listen" href="https://open.spotify.com/search/Arvo%20Part%20Spiegel%20im%20Spiegel" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="stone" aria-label="Knossos">
+    <figure class="r"><img src="img/knossos.jpg" alt="The reconstructed north entrance of the palace of Knossos with dark columns" style="object-position:40% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 35<span> / 117</span></p>
+      <h3 class="work r">Knossos</h3>
+      <p class="caption serif r">The labyrinth stands empty. Only the stones still remember the way out.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Vangelis</p><p class="title">Mythodea</p><a class="listen" href="https://open.spotify.com/search/Vangelis%20Mythodea" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="stone" aria-label="The Fighter">
+    <figure class="r"><img src="img/fighter.jpg" alt="Low-angle bronze statue of a Cretan fighter with a rifle against stormy clouds" style="object-position:50% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 36<span> / 117</span></p>
+      <h3 class="work r">The Fighter</h3>
+      <p class="caption serif r">Bronze doesn’t tire. It stands where he stood, facing the same sky.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Nikos Xylouris</p><p class="title">Póte tha kánei xasteriá</p><a class="listen" href="https://open.spotify.com/search/Nikos%20Xylouris%20Pote%20tha%20kanei%20xasteria" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="stone" aria-label="Alexander">
+    <figure class="r"><img src="img/alexander.jpg" alt="The equestrian statue of Alexander the Great by the sea, giant spears and shields beside it, a lone cyclist passing" style="object-position:35% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 37<span> / 117</span></p>
+      <h3 class="work r">Alexander</h3>
+      <p class="caption serif r">He conquered half the known world. Below him, a man on a bicycle has somewhere quieter to be.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Vangelis</p><p class="title">Titans</p><a class="listen" href="https://open.spotify.com/search/Vangelis%20Alexander%20Titans" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="stone" aria-label="Far from Home">
+    <figure class="r"><img src="img/marbles.jpg" alt="Parthenon marbles in a museum hall: a horse’s head and a reclining figure on a long plinth" style="object-position:45% 55%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 38<span> / 117</span></p>
+      <h3 class="work r">Far from Home</h3>
+      <p class="caption serif r">Two and a half thousand years old, and still looking toward the same light — just from the wrong window.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Manos Hadjidakis</p><p class="title">Kemal</p><a class="listen" href="https://open.spotify.com/search/Manos%20Hadjidakis%20Kemal" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="chapter snap " id="sacred-stone" data-ch="sacred-stone">
+    <p class="num serif r">VIII</p>
+    <h2 class="name r">SACRED STONE</h2>
+    <p class="epi serif r">Some walls keep the weather out. These were built to keep something in.</p>
+  </section>
+  <section class="plate snap " data-ch="sacred-stone" aria-label="Saint Nicholas">
+    <figure class="r"><img src="img/nicholas.jpg" alt="The stone façade of a church from below, an inscription and a saint’s banner over the door" style="object-position:50% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 39<span> / 117</span></p>
+      <h3 class="work r">Saint Nicholas</h3>
+      <p class="caption serif r">The words are carved in stone. The faith was carved deeper.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">John Tavener</p><p class="title">Song for Athene</p><a class="listen" href="https://open.spotify.com/search/John%20Tavener%20Song%20for%20Athene" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="sacred-stone" aria-label="Bell Tower">
+    <figure class="r"><img src="img/tower.jpg" alt="A church bell tower seen from below against a textured sky" style="object-position:60% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 40<span> / 117</span></p>
+      <h3 class="work r">Bell Tower</h3>
+      <p class="caption serif r">It counts the hours for the town, and the centuries for itself.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Arvo Pärt</p><p class="title">Für Alina</p><a class="listen" href="https://open.spotify.com/search/Arvo%20Part%20Fur%20Alina" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="sacred-stone" aria-label="Winter Branches">
+    <figure class="r"><img src="img/branches.jpg" alt="Bare plane-tree branches reaching toward a church tower and its flag" style="object-position:50% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 41<span> / 117</span></p>
+      <h3 class="work r">Winter Branches</h3>
+      <p class="caption serif r">The tree lost every leaf. The tower never noticed winter.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Max Richter</p><p class="title">Vladimir’s Blues</p><a class="listen" href="https://open.spotify.com/search/Max%20Richter%20Vladimir%27s%20Blues" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="sacred-stone" aria-label="The Long Wall">
+    <figure class="r"><img src="img/wall.jpg" alt="The weathered stone side of a church under a dark streaked sky" style="object-position:45% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 42<span> / 117</span></p>
+      <h3 class="work r">The Long Wall</h3>
+      <p class="caption serif r">Stone after stone — a wall that outlived every hand that built it.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Jóhann Jóhannsson</p><p class="title">The Sun’s Gone Dim and the Sky’s Turned Black</p><a class="listen" href="https://open.spotify.com/search/Johann%20Johannsson%20The%20Sun%27s%20Gone%20Dim%20and%20the%20Sky%27s%20Turned%20Black" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="sacred-stone" aria-label="Seven Domes">
+    <figure class="r"><img src="img/domes.jpg" alt="White monastery domes and arched windows against a black sky" style="object-position:50% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 43<span> / 117</span></p>
+      <h3 class="work r">Seven Domes</h3>
+      <p class="caption serif r">Seven curves against the dark. Each one a prayer that learned to stand.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Gregorio Allegri</p><p class="title">Miserere</p><a class="listen" href="https://open.spotify.com/search/Allegri%20Miserere" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="sacred-stone" aria-label="Holy Trinity">
+    <figure class="r"><img src="img/trinity.jpg" alt="The stone façade of a Cretan monastery with three domes, its courtyard in sun and shadow" style="object-position:50% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 44<span> / 117</span></p>
+      <h3 class="work r">Holy Trinity</h3>
+      <p class="caption serif r">Three domes, one door, and a courtyard that keeps the shade for whoever arrives tired.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Eleni Karaindrou</p><p class="title">Eternity and a Day</p><a class="listen" href="https://open.spotify.com/search/Eleni%20Karaindrou%20Eternity%20and%20a%20Day" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="sacred-stone" aria-label="The Iconostasis">
+    <figure class="r"><img src="img/iconostasis.jpg" alt="A dark chapel interior, light falling on the icons of the iconostasis between empty chairs" style="object-position:50% 55%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 45<span> / 117</span></p>
+      <h3 class="work r">The Iconostasis</h3>
+      <p class="caption serif r">The chairs are empty. The saints don’t mind; they’ve learned to wait.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Byzantine Choir</p><p class="title">Ti Ypermacho</p><a class="listen" href="https://open.spotify.com/search/Byzantine%20chant%20Ti%20Ypermacho" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="chapter snap " id="strangers" data-ch="strangers">
+    <p class="num serif r">IX</p>
+    <h2 class="name r">CITY OF STRANGERS</h2>
+    <p class="epi serif r">A million people, and each one walking alone.</p>
+  </section>
+  <section class="plate snap  rev" data-ch="strangers" aria-label="The Wheel">
+    <figure class="r"><img src="img/wheel.jpg" alt="Half of a giant observation wheel rising over a stately building under a heavy sky" style="object-position:55% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 46<span> / 117</span></p>
+      <h3 class="work r">The Wheel</h3>
+      <p class="caption serif r">It turns all day and takes everyone back to where they started. Nobody minds.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">The Kinks</p><p class="title">Waterloo Sunset</p><a class="listen" href="https://open.spotify.com/search/The%20Kinks%20Waterloo%20Sunset" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="strangers" aria-label="The Temple">
+    <figure class="r"><img src="img/temple.jpg" alt="A massive stone building with a stepped tower under dark clouds, people crossing the street" style="object-position:50% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 47<span> / 117</span></p>
+      <h3 class="work r">The Temple</h3>
+      <p class="caption serif r">A building made to keep a secret. The street walks past without asking.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Clint Mansell</p><p class="title">Lux Aeterna</p><a class="listen" href="https://open.spotify.com/search/Clint%20Mansell%20Lux%20Aeterna" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="strangers" aria-label="Tower Bridge">
+    <figure class="r"><img src="img/tower-bridge.jpg" alt="Tower Bridge in near-silhouette under a dramatic sky, a boat crossing the dark Thames" style="object-position:50% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 48<span> / 117</span></p>
+      <h3 class="work r">Tower Bridge</h3>
+      <p class="caption serif r">Two towers holding hands across the river, for over a century, in every kind of weather.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Ennio Morricone</p><p class="title">Deborah’s Theme</p><a class="listen" href="https://open.spotify.com/search/Ennio%20Morricone%20Deborah%27s%20Theme" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="strangers" aria-label="The City">
+    <figure class="r"><img src="img/skyline.jpg" alt="The towers of the City of London against black and white clouds, the river below" style="object-position:50% 55%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 49<span> / 117</span></p>
+      <h3 class="work r">The City</h3>
+      <p class="caption serif r">Glass towers built for numbers. The clouds don’t count anything.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Hans Zimmer</p><p class="title">Dream Is Collapsing</p><a class="listen" href="https://open.spotify.com/search/Hans%20Zimmer%20Dream%20Is%20Collapsing" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="strangers" aria-label="Look Left">
+    <figure class="r"><img src="img/look-left.jpg" alt="Pedestrians on a zebra crossing seen straight down from above, LOOK LEFT painted on the road" style="object-position:60% 60%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 50<span> / 117</span></p>
+      <h3 class="work r">Look Left</h3>
+      <p class="caption serif r">Everyone looks left. Only the camera looked down.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Ralph McTell</p><p class="title">Streets of London</p><a class="listen" href="https://open.spotify.com/search/Ralph%20McTell%20Streets%20of%20London" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="strangers" aria-label="Notting Hill Gate">
+    <figure class="r"><img src="img/notting-hill.jpg" alt="A woman in a long dress waits on a dim Underground platform as a train arrives" style="object-position:70% 60%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 51<span> / 117</span></p>
+      <h3 class="work r">Notting Hill Gate</h3>
+      <p class="caption serif r">The train comes, the doors open, and she decides. We never find out what.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">The Smiths</p><p class="title">There Is a Light That Never Goes Out</p><a class="listen" href="https://open.spotify.com/search/The%20Smiths%20There%20Is%20a%20Light%20That%20Never%20Goes%20Out" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="strangers" aria-label="Quartet for Strangers">
+    <figure class="r"><img src="img/quartet.jpg" alt="A string quartet plays in a market courtyard surrounded by café tables and passers-by" style="object-position:50% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 52<span> / 117</span></p>
+      <h3 class="work r">Quartet for Strangers</h3>
+      <p class="caption serif r">Four strings, a hundred tables. For one song, strangers shared the same table.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Johann Pachelbel</p><p class="title">Canon in D</p><a class="listen" href="https://open.spotify.com/search/Pachelbel%20Canon%20in%20D" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="strangers" aria-label="The Copyist">
+    <figure class="r"><img src="img/copyist.jpg" alt="A woman sketches on a bench in front of a large old master painting in a gallery" style="object-position:50% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 53<span> / 117</span></p>
+      <h3 class="work r">The Copyist</h3>
+      <p class="caption serif r">Four hundred years on the wall. Today, someone finally sat down and listened.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Claude Debussy</p><p class="title">Clair de Lune</p><a class="listen" href="https://open.spotify.com/search/Debussy%20Clair%20de%20Lune" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="strangers" aria-label="Green Light">
+    <figure class="r"><img src="img/green-bridge.jpg" alt="Classical columns with Ionic capitals; a glass walkway between them glows green" style="object-position:55% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 54<span> / 117</span></p>
+      <h3 class="work r">Green Light</h3>
+      <p class="caption serif r">Between the columns of an old empire, a little green light says: you may pass.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Kiasmos</p><p class="title">Looped</p><a class="listen" href="https://open.spotify.com/search/Kiasmos%20Looped" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="strangers" aria-label="The Leap">
+    <figure class="r"><img src="img/leap.jpg" alt="A child leaps with arms wide over a cobbled path toward a long pool between trees" style="object-position:50% 55%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 55<span> / 117</span></p>
+      <h3 class="work r">The Leap</h3>
+      <p class="caption serif r">Feet off the stones, arms to the sky. For one second, the whole park belonged to her.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Florence + The Machine</p><p class="title">Dog Days Are Over</p><a class="listen" href="https://open.spotify.com/search/Florence%20and%20The%20Machine%20Dog%20Days%20Are%20Over" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="strangers" aria-label="The Fire Keeper">
+    <figure class="r"><img src="img/grill.jpg" alt="A bearded man in an apron and cap tends an open wood fire in an outdoor kitchen" style="object-position:50% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 56<span> / 117</span></p>
+      <h3 class="work r">The Fire Keeper</h3>
+      <p class="caption serif r">He’s been feeding the same fire for forty years. It still listens only to him.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Tom Waits</p><p class="title">Tom Traubert’s Blues</p><a class="listen" href="https://open.spotify.com/search/Tom%20Waits%20Tom%20Traubert%27s%20Blues" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="strangers" aria-label="Dry Dock">
+    <figure class="r"><img src="img/shipyard.jpg" alt="Superyachts in a dry dock seen from above, a sail-shaped tower and the open sea beyond" style="object-position:50% 55%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 57<span> / 117</span></p>
+      <h3 class="work r">Dry Dock</h3>
+      <p class="caption serif r">The biggest boats in the harbour, standing still on dry land, dreaming of the horizon.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Air</p><p class="title">La Femme d’Argent</p><a class="listen" href="https://open.spotify.com/search/Air%20La%20Femme%20d%27Argent" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="chapter snap " id="danube" data-ch="danube">
+    <p class="num serif r">X</p>
+    <h2 class="name r">DANUBE</h2>
+    <p class="epi serif r">A river that divides a city into two halves, and joins them every night.</p>
+  </section>
+  <section class="plate snap  rev" data-ch="danube" aria-label="The Little Princess">
+    <figure class="r"><img src="img/little-princess.jpg" alt="A bronze statue of a girl in a jester’s crown sits on a railing, a yellow tram and white bridge behind" style="object-position:40% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 58<span> / 117</span></p>
+      <h3 class="work r">The Little Princess</h3>
+      <p class="caption serif r">She sits on the railing, waiting for a parade that ended long ago. The trams still pass to keep her company.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Zbigniew Preisner</p><p class="title">Van den Budenmayer</p><a class="listen" href="https://open.spotify.com/search/Zbigniew%20Preisner%20Van%20den%20Budenmayer" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="danube" aria-label="Tram 1321">
+    <figure class="r"><img src="img/tram.jpg" alt="A tram on the Danube embankment at dusk, the lit Chain Bridge in the distance" style="object-position:45% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 59<span> / 117</span></p>
+      <h3 class="work r">Tram 1321</h3>
+      <p class="caption serif r">The last tram of the evening. The bridge has already put on its lights.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Chet Baker</p><p class="title">My Funny Valentine</p><a class="listen" href="https://open.spotify.com/search/Chet%20Baker%20My%20Funny%20Valentine" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="danube" aria-label="The Mother">
+    <figure class="r"><img src="img/ducklings.jpg" alt="A duck stands guard over her ducklings on the riverbank, Buda’s spires across the water" style="object-position:50% 70%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 60<span> / 117</span></p>
+      <h3 class="work r">The Mother</h3>
+      <p class="caption serif r">Behind her, a castle and a thousand years of history. She only has eyes for six small heads.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Antonín Dvořák</p><p class="title">Song to the Moon</p><a class="listen" href="https://open.spotify.com/search/Dvorak%20Song%20to%20the%20Moon" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="danube" aria-label="Heroes’ Square">
+    <figure class="r"><img src="img/heroes-square.jpg" alt="A striped balloon floats between the colonnade and the column of Heroes’ Square" style="object-position:50% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 61<span> / 117</span></p>
+      <h3 class="work r">Heroes’ Square</h3>
+      <p class="caption serif r">Kings in bronze, an angel on a column, and above them all, a balloon on a string.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Johann Strauss II</p><p class="title">The Blue Danube</p><a class="listen" href="https://open.spotify.com/search/Strauss%20The%20Blue%20Danube" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="chapter snap " id="storm" data-ch="storm">
+    <p class="num serif r">XI</p>
+    <h2 class="name r">THE STORM</h2>
+    <p class="epi serif r">Chania, one winter morning. The sea had something to say.</p>
+  </section>
+  <section class="plate snap  rev" data-ch="storm" aria-label="Reserved">
+    <figure class="r"><img src="img/storm-bench.jpg" alt="A wave breaks over an empty bench on the harbour wall, the lighthouse behind" style="object-position:50% 55%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 62<span> / 117</span></p>
+      <h3 class="work r">Reserved</h3>
+      <p class="caption serif r">A bench by the sea, reserved for the only visitor who came.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Dustin O’Halloran</p><p class="title">Opus 23</p><a class="listen" href="https://open.spotify.com/search/Dustin%20OHalloran%20Opus%2023" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="storm" aria-label="First Wave">
+    <figure class="r"><img src="img/storm-1.jpg" alt="A column of spray rises in front of the Chania lighthouse" style="object-position:50% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 63<span> / 117</span></p>
+      <h3 class="work r">First Wave</h3>
+      <p class="caption serif r">The lighthouse has seen this before. It simply keeps the light on.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Ólafur Arnalds</p><p class="title">Near Light</p><a class="listen" href="https://open.spotify.com/search/Olafur%20Arnalds%20Near%20Light" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="storm" aria-label="Second Wave">
+    <figure class="r"><img src="img/storm-2.jpg" alt="A huge wave engulfs the base of the Chania lighthouse" style="object-position:50% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 64<span> / 117</span></p>
+      <h3 class="work r">Second Wave</h3>
+      <p class="caption serif r">The sea throws everything it has. The tower doesn’t answer.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">The Cinematic Orchestra</p><p class="title">Arrival of the Birds</p><a class="listen" href="https://open.spotify.com/search/Cinematic%20Orchestra%20Arrival%20of%20the%20Birds" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="storm" aria-label="Third Wave">
+    <figure class="r"><img src="img/storm-3.jpg" alt="Spray almost hides the lighthouse under black clouds" style="object-position:50% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 65<span> / 117</span></p>
+      <h3 class="work r">Third Wave</h3>
+      <p class="caption serif r">By the third wave you understand: it isn’t anger. It’s devotion.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Sigur Rós</p><p class="title">Svefn-g-englar</p><a class="listen" href="https://open.spotify.com/search/Sigur%20Ros%20Svefn-g-englar" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="storm" aria-label="Promenade">
+    <figure class="r"><img src="img/promenade.jpg" alt="Waves flood the empty harbour promenade, street lamps reflected in the wet stone" style="object-position:50% 55%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 66<span> / 117</span></p>
+      <h3 class="work r">Promenade</h3>
+      <p class="caption serif r">The lamps stayed on for no one. The sea walked the promenade alone.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Ludovico Einaudi</p><p class="title">Experience</p><a class="listen" href="https://open.spotify.com/search/Ludovico%20Einaudi%20Experience" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="storm" aria-label="Lamp and Lighthouse">
+    <figure class="r"><img src="img/lamp.jpg" alt="A single street lamp in the foreground, the lighthouse beyond a rough sea" style="object-position:50% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 67<span> / 117</span></p>
+      <h3 class="work r">Lamp and Lighthouse</h3>
+      <p class="caption serif r">One lights the way home, the other the way out. Both stand still in the storm.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Agnes Obel</p><p class="title">Fuel to Fire</p><a class="listen" href="https://open.spotify.com/search/Agnes%20Obel%20Fuel%20to%20Fire" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="storm" aria-label="The Day After">
+    <figure class="r"><img src="img/calm.jpg" alt="A calm harbour, water so clear the stones show through, under wisps of cloud" style="object-position:50% 60%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 68<span> / 117</span></p>
+      <h3 class="work r">The Day After</h3>
+      <p class="caption serif r">The day after the storm, the water was clear enough to count the stones.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Ryuichi Sakamoto</p><p class="title">Merry Christmas Mr. Lawrence</p><a class="listen" href="https://open.spotify.com/search/Ryuichi%20Sakamoto%20Merry%20Christmas%20Mr%20Lawrence" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="chapter snap red" id="red-thread" data-ch="red-thread">
+    <p class="num serif r">XII</p>
+    <h2 class="name r">THE RED THREAD</h2>
+    <p class="epi serif r">In a world without colour, red is memory.</p>
+  </section>
+  <section class="plate snap red" data-ch="red-thread" aria-label="The Dress">
+    <figure class="r"><img src="img/red-dress.jpg" alt="A fractured black-and-white portrait; only the flowers on the dress are red" style="object-position:45% 35%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 69<span> / 117</span></p>
+      <h3 class="work r">The Dress</h3>
+      <p class="caption serif r">The world stayed black and white. She kept only the flowers.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Chris Isaak</p><p class="title">Wicked Game</p><a class="listen" href="https://open.spotify.com/search/Chris%20Isaak%20Wicked%20Game" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap red rev" data-ch="red-thread" aria-label="Before Miró">
+    <figure class="r"><img src="img/miro.jpg" alt="Five women seen from behind, facing a large tapestry of red shapes" style="object-position:50% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 70<span> / 117</span></p>
+      <h3 class="work r">Before Miró</h3>
+      <p class="caption serif r">Five backs, one red. No one speaks — they are all hearing the same thing.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Erik Satie</p><p class="title">Gymnopédie No. 1</p><a class="listen" href="https://open.spotify.com/search/Erik%20Satie%20Gymnopedie%20No.%201" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap red" data-ch="red-thread" aria-label="Lanterns">
+    <figure class="r"><img src="img/lanterns.jpg" alt="A street hung with hundreds of red lanterns in a black-and-white city" style="object-position:50% 35%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 71<span> / 117</span></p>
+      <h3 class="work r">Lanterns</h3>
+      <p class="caption serif r">A thousand red lanterns for a wish no one said out loud.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Shigeru Umebayashi</p><p class="title">Yumeji’s Theme</p><a class="listen" href="https://open.spotify.com/search/Shigeru%20Umebayashi%20Yumeji%27s%20Theme" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap red rev" data-ch="red-thread" aria-label="Mind the Gap">
+    <figure class="r"><img src="img/tube.jpg" alt="An Underground train with red doors passing a woman dressed in red" style="object-position:35% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 72<span> / 117</span></p>
+      <h3 class="work r">Mind the Gap</h3>
+      <p class="caption serif r">Between those who leave and those who stay there is always a gap. Mind it.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Portishead</p><p class="title">Roads</p><a class="listen" href="https://open.spotify.com/search/Portishead%20Roads" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap red" data-ch="red-thread" aria-label="Into the Gorge">
+    <figure class="r"><img src="img/red-gorge.jpg" alt="A woman in a red-hemmed dress walks between towering walls of a narrow gorge" style="object-position:50% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 73<span> / 117</span></p>
+      <h3 class="work r">Into the Gorge</h3>
+      <p class="caption serif r">The rock took a million years to open. She walked through in a red dress, as if it had been waiting.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Kate Bush</p><p class="title">Running Up That Hill</p><a class="listen" href="https://open.spotify.com/search/Kate%20Bush%20Running%20Up%20That%20Hill" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap red rev" data-ch="red-thread" aria-label="One Step in Colour">
+    <figure class="r"><img src="img/madrasa.jpg" alt="A crowd in a carved Moroccan courtyard; one woman in a red skirt walks through" style="object-position:70% 60%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 74<span> / 117</span></p>
+      <h3 class="work r">One Step in Colour</h3>
+      <p class="caption serif r">A thousand years of patterns, a crowd of strangers. Only one step was in colour.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Anouar Brahem</p><p class="title">Le Pas du Chat Noir</p><a class="listen" href="https://open.spotify.com/search/Anouar%20Brahem%20Le%20Pas%20du%20Chat%20Noir" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap red" data-ch="red-thread" aria-label="Birds on a Window">
+    <figure class="r"><img src="img/door.jpg" alt="An old boarded window with red birds painted on it, graffiti on the wall around" style="object-position:50% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 75<span> / 117</span></p>
+      <h3 class="work r">Birds on a Window</h3>
+      <p class="caption serif r">The window hasn’t opened in years. The birds left anyway.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Radiohead</p><p class="title">Nude</p><a class="listen" href="https://open.spotify.com/search/Radiohead%20Nude" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap red rev" data-ch="red-thread" aria-label="Autumn on the Canal">
+    <figure class="r"><img src="img/red-tree.jpg" alt="A woman on a canal bench in Amsterdam; only the tree beside her is red" style="object-position:40% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 76<span> / 117</span></p>
+      <h3 class="work r">Autumn on the Canal</h3>
+      <p class="caption serif r">The whole street stayed grey. Only the tree decided autumn had arrived.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Billie Holiday</p><p class="title">Autumn in New York</p><a class="listen" href="https://open.spotify.com/search/Billie%20Holiday%20Autumn%20in%20New%20York" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap red" data-ch="red-thread" aria-label="Red Parasols">
+    <figure class="r"><img src="img/pavilion.jpg" alt="A grand park pavilion under storm clouds, its parasols and awnings red" style="object-position:50% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 77<span> / 117</span></p>
+      <h3 class="work r">Red Parasols</h3>
+      <p class="caption serif r">Storm clouds over the park. Under the red parasols, nobody noticed.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Édith Piaf</p><p class="title">La Vie en Rose</p><a class="listen" href="https://open.spotify.com/search/Edith%20Piaf%20La%20Vie%20en%20Rose" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap red rev" data-ch="red-thread" aria-label="The Waiting Room">
+    <figure class="r"><img src="img/sofas.jpg" alt="A Moroccan salon of red velvet sofas around a single candle" style="object-position:50% 55%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 78<span> / 117</span></p>
+      <h3 class="work r">The Waiting Room</h3>
+      <p class="caption serif r">One candle, a room full of red, and a conversation that hasn’t started yet.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Lana Del Rey</p><p class="title">Young and Beautiful</p><a class="listen" href="https://open.spotify.com/search/Lana%20Del%20Rey%20Young%20and%20Beautiful" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap red" data-ch="red-thread" aria-label="Courtyard">
+    <figure class="r"><img src="img/morocco.jpg" alt="A stone courtyard with palms and red rugs laid out in the sun" style="object-position:55% 55%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 79<span> / 117</span></p>
+      <h3 class="work r">Courtyard</h3>
+      <p class="caption serif r">The rugs dried in the sun. The petals fell without asking.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Ludovico Einaudi</p><p class="title">Nuvole Bianche</p><a class="listen" href="https://open.spotify.com/search/Ludovico%20Einaudi%20Nuvole%20Bianche" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap red rev" data-ch="red-thread" aria-label="From Above">
+    <figure class="r"><img src="img/tapas.jpg" alt="Two women at a café table seen from above, red roses over the door" style="object-position:40% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 80<span> / 117</span></p>
+      <h3 class="work r">From Above</h3>
+      <p class="caption serif r">Two women, one table, a whole afternoon. Above them, the roses listen.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Buena Vista Social Club</p><p class="title">Chan Chan</p><a class="listen" href="https://open.spotify.com/search/Buena%20Vista%20Social%20Club%20Chan%20Chan" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap red" data-ch="red-thread" aria-label="One">
+    <figure class="r"><img src="img/balloons.jpg" alt="Dozens of dark hot-air balloons in the dawn haze, one of them red" style="object-position:30% 60%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 81<span> / 117</span></p>
+      <h3 class="work r">One</h3>
+      <p class="caption serif r">Everyone was flying. Only one remembered its colour.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Sigur Rós</p><p class="title">Hoppípolla</p><a class="listen" href="https://open.spotify.com/search/Sigur%20Ros%20Hoppipolla" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="chapter snap red" id="red-summer" data-ch="red-summer">
+    <p class="num serif r">XIII</p>
+    <h2 class="name r">RED SUMMER</h2>
+    <p class="epi serif r">Summers are remembered in a single colour.</p>
+  </section>
+  <section class="plate snap red rev" data-ch="red-summer" aria-label="After the Rain">
+    <figure class="r"><img src="img/playground.jpg" alt="An empty playground under heavy clouds, the rocking horses red" style="object-position:40% 55%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 82<span> / 117</span></p>
+      <h3 class="work r">After the Rain</h3>
+      <p class="caption serif r">The rain sent the children home. The little horses are still waiting.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Nils Frahm</p><p class="title">Says</p><a class="listen" href="https://open.spotify.com/search/Nils%20Frahm%20Says" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap red" data-ch="red-summer" aria-label="Two Chairs">
+    <figure class="r"><img src="img/towel.jpg" alt="Two sunloungers under a straw parasol, a red towel on one" style="object-position:55% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 83<span> / 117</span></p>
+      <h3 class="work r">Two Chairs</h3>
+      <p class="caption serif r">One chair empty, one waiting. The towel says someone will be back.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">The xx</p><p class="title">Intro</p><a class="listen" href="https://open.spotify.com/search/The%20xx%20Intro" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap red rev" data-ch="red-summer" aria-label="Two in Red">
+    <figure class="r"><img src="img/panda.jpg" alt="A girl and a boy in red shirts walking apart before a red Chinese gate" style="object-position:50% 55%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 84<span> / 117</span></p>
+      <h3 class="work r">Two in Red</h3>
+      <p class="caption serif r">Same colour, different directions. They’ll meet again at the gate.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Beirut</p><p class="title">Elephant Gun</p><a class="listen" href="https://open.spotify.com/search/Beirut%20Elephant%20Gun" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap red" data-ch="red-summer" aria-label="Red Umbrellas">
+    <figure class="r"><img src="img/red-umbrellas.jpg" alt="A black-and-white beach under red umbrellas, a young man walking toward the sea" style="object-position:55% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 85<span> / 117</span></p>
+      <h3 class="work r">Red Umbrellas</h3>
+      <p class="caption serif r">Every umbrella red, every shadow black. He walks into the only colour left: the sea.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Stan Getz &amp; João Gilberto</p><p class="title">The Girl from Ipanema</p><a class="listen" href="https://open.spotify.com/search/Stan%20Getz%20Joao%20Gilberto%20The%20Girl%20from%20Ipanema" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap red rev" data-ch="red-summer" aria-label="Secrets">
+    <figure class="r"><img src="img/picnic.jpg" alt="Two children at a wooden picnic table, a red backpack between them" style="object-position:50% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 86<span> / 117</span></p>
+      <h3 class="work r">Secrets</h3>
+      <p class="caption serif r">One backpack between them, and a secret too big to whisper.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Sufjan Stevens</p><p class="title">Mystery of Love</p><a class="listen" href="https://open.spotify.com/search/Sufjan%20Stevens%20Mystery%20of%20Love" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap red" data-ch="red-summer" aria-label="Up the Steps">
+    <figure class="r"><img src="img/steps.jpg" alt="A woman and a little girl climb whitewashed steps under red bougainvillea" style="object-position:50% 55%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 87<span> / 117</span></p>
+      <h3 class="work r">Up the Steps</h3>
+      <p class="caption serif r">Her hand in yours. Every step up is one she’ll remember without knowing why.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Bon Iver</p><p class="title">Holocene</p><a class="listen" href="https://open.spotify.com/search/Bon%20Iver%20Holocene" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap red rev" data-ch="red-summer" aria-label="Pomegranates">
+    <figure class="r"><img src="img/pomegranates.jpg" alt="A pomegranate tree against a cloudy sky, only the fruit in red" style="object-position:60% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 88<span> / 117</span></p>
+      <h3 class="work r">Pomegranates</h3>
+      <p class="caption serif r">Every one of them full of seeds. Every seed, a summer.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Manos Hadjidakis</p><p class="title">The Smile of La Gioconda</p><a class="listen" href="https://open.spotify.com/search/Hadjidakis%20Smile%20of%20La%20Gioconda" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap red" data-ch="red-summer" aria-label="First Blossom">
+    <figure class="r"><img src="img/blossom.jpg" alt="A small tree in red blossom under sunrays and dark clouds" style="object-position:55% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 89<span> / 117</span></p>
+      <h3 class="work r">First Blossom</h3>
+      <p class="caption serif r">Winter still had the sky. The tree had already decided.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Max Richter</p><p class="title">Spring 1</p><a class="listen" href="https://open.spotify.com/search/Max%20Richter%20Recomposed%20Spring%201" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="chapter snap gold" id="full-colour" data-ch="full-colour">
+    <p class="num serif r">XIV</p>
+    <h2 class="name r">FULL COLOUR</h2>
+    <p class="epi serif r">And then the world remembered all its colours.</p>
+  </section>
+  <section class="plate snap gold rev" data-ch="full-colour" aria-label="Vincent, Through Glass">
+    <figure class="r"><img src="img/vincent.jpg" alt="A Van Gogh figure among sunflowers behind a shop window reflecting Amsterdam" style="object-position:45% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 90<span> / 117</span></p>
+      <h3 class="work r">Vincent, Through Glass</h3>
+      <p class="caption serif r">Behind the glass, the sunflowers. On the glass, a city he never saw.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Don McLean</p><p class="title">Vincent</p><a class="listen" href="https://open.spotify.com/search/Don%20McLean%20Vincent" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold" data-ch="full-colour" aria-label="The Spice Road">
+    <figure class="r"><img src="img/donkey.jpg" alt="A man in a straw hat with a donkey and cart in a terracotta Marrakech alley" style="object-position:45% 60%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 91<span> / 117</span></p>
+      <h3 class="work r">The Spice Road</h3>
+      <p class="caption serif r">The sign promises spices from the Atlas. The donkey has already heard every promise.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Sting</p><p class="title">Desert Rose</p><a class="listen" href="https://open.spotify.com/search/Sting%20Desert%20Rose" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold rev" data-ch="full-colour" aria-label="The Red House">
+    <figure class="r"><img src="img/redhouse.jpg" alt="Narrow Amsterdam canal houses, one painted deep red" style="object-position:60% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 92<span> / 117</span></p>
+      <h3 class="work r">The Red House</h3>
+      <p class="caption serif r">All the houses lean. Only one decided to blush.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Chet Baker</p><p class="title">Almost Blue</p><a class="listen" href="https://open.spotify.com/search/Chet%20Baker%20Almost%20Blue" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold" data-ch="full-colour" aria-label="Sunday on the Canal">
+    <figure class="r"><img src="img/canal.jpg" alt="An Amsterdam canal in sunlight, a stone bridge and a domed church at the end" style="object-position:50% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 93<span> / 117</span></p>
+      <h3 class="work r">Sunday on the Canal</h3>
+      <p class="caption serif r">Bridges, bicycles, a church keeping watch. Even the water looked like it was on holiday.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Louis Armstrong</p><p class="title">What a Wonderful World</p><a class="listen" href="https://open.spotify.com/search/Louis%20Armstrong%20What%20a%20Wonderful%20World" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold rev" data-ch="full-colour" aria-label="The House by the Lake">
+    <figure class="r"><img src="img/kew.jpg" alt="A peach-coloured house across a green lake under a deep blue sky full of clouds" style="object-position:50% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 94<span> / 117</span></p>
+      <h3 class="work r">The House by the Lake</h3>
+      <p class="caption serif r">The house stands still. The sky and the water never stop rearranging themselves around it.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Ralph Vaughan Williams</p><p class="title">The Lark Ascending</p><a class="listen" href="https://open.spotify.com/search/Vaughan%20Williams%20The%20Lark%20Ascending" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold" data-ch="full-colour" aria-label="Looking Up">
+    <figure class="r"><img src="img/glass-towers.jpg" alt="Two glass towers seen from below, a ribbon of blue sky and clouds between them" style="object-position:50% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 95<span> / 117</span></p>
+      <h3 class="work r">Looking Up</h3>
+      <p class="caption serif r">Two buildings that never touch, sharing the same strip of sky.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Massive Attack</p><p class="title">Angel</p><a class="listen" href="https://open.spotify.com/search/Massive%20Attack%20Angel" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold rev" data-ch="full-colour" aria-label="The Audience">
+    <figure class="r"><img src="img/ducks.jpg" alt="A shop window of hundreds of rubber ducks, passers-by reflected in the glass" style="object-position:50% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 96<span> / 117</span></p>
+      <h3 class="work r">The Audience</h3>
+      <p class="caption serif r">Hundreds of little faces, all smiling the same way. Behind the glass, the real ones walk by.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Talking Heads</p><p class="title">This Must Be the Place</p><a class="listen" href="https://open.spotify.com/search/Talking%20Heads%20This%20Must%20Be%20the%20Place" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold" data-ch="full-colour" aria-label="Sweet Window">
+    <figure class="r"><img src="img/chocolates.jpg" alt="A shop window of giant painted chocolates, trees and canal houses reflected over them" style="object-position:50% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 97<span> / 117</span></p>
+      <h3 class="work r">Sweet Window</h3>
+      <p class="caption serif r">The window holds the chocolates. The glass holds the whole street.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Bill Withers</p><p class="title">Lovely Day</p><a class="listen" href="https://open.spotify.com/search/Bill%20Withers%20Lovely%20Day" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold rev" data-ch="full-colour" aria-label="Ignition">
+    <figure class="r"><img src="img/ignition.jpg" alt="A burner fills a red and orange hot-air balloon with flame at dawn" style="object-position:55% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 98<span> / 117</span></p>
+      <h3 class="work r">Ignition</h3>
+      <p class="caption serif r">Before flight, fire. Before fire, someone brave enough to hold the ropes.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">M83</p><p class="title">Wait</p><a class="listen" href="https://open.spotify.com/search/M83%20Wait" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold" data-ch="full-colour" aria-label="Nearchos">
+    <figure class="r"><img src="img/harbour.jpg" alt="A blue fishing boat in Heraklion’s old harbour, the Venetian fortress behind" style="object-position:50% 60%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 99<span> / 117</span></p>
+      <h3 class="work r">Nearchos</h3>
+      <p class="caption serif r">The nets dry on the quay. The boat dreams of open water.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Ennio Morricone</p><p class="title">Cinema Paradiso</p><a class="listen" href="https://open.spotify.com/search/Ennio%20Morricone%20Cinema%20Paradiso" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold rev" data-ch="full-colour" aria-label="Evangelistria">
+    <figure class="r"><img src="img/night-harbour.jpg" alt="A small fishing boat on green water at night, the lit town and its castle behind" style="object-position:50% 65%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 100<span> / 117</span></p>
+      <h3 class="work r">Evangelistria</h3>
+      <p class="caption serif r">The town goes out for the night. The boat stays, keeping the water green.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Vassilis Tsitsanis</p><p class="title">Synnefiasmeni Kyriaki</p><a class="listen" href="https://open.spotify.com/search/Tsitsanis%20Synnefiasmeni%20Kyriaki" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold" data-ch="full-colour" aria-label="Nets">
+    <figure class="r"><img src="img/nets.jpg" alt="Orange and red fishing nets heaped on the quay of Heraklion’s old harbour, the fortress behind" style="object-position:50% 60%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 101<span> / 117</span></p>
+      <h3 class="work r">Nets</h3>
+      <p class="caption serif r">The fortress guarded the harbour for centuries. The nets only ask for one good night.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Mikis Theodorakis</p><p class="title">Zorba’s Dance</p><a class="listen" href="https://open.spotify.com/search/Mikis%20Theodorakis%20Zorba%27s%20Dance" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold rev" data-ch="full-colour" aria-label="The Road Home">
+    <figure class="r"><img src="img/road.jpg" alt="A road at ground level running toward a blood-red sunset" style="object-position:50% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 102<span> / 117</span></p>
+      <h3 class="work r">The Road Home</h3>
+      <p class="caption serif r">Two lines run toward the sun. Neither of them ever arrives first.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Pink Floyd</p><p class="title">Wish You Were Here</p><a class="listen" href="https://open.spotify.com/search/Pink%20Floyd%20Wish%20You%20Were%20Here" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold" data-ch="full-colour" aria-label="Your Move">
+    <figure class="r"><img src="img/chess.jpg" alt="A boy in glasses behind a chessboard, mid-sentence, eyebrows raised" style="object-position:50% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 103<span> / 117</span></p>
+      <h3 class="work r">Your Move</h3>
+      <p class="caption serif r">He’s already three moves ahead. He’s just waiting for you to notice.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Yo-Yo Ma</p><p class="title">Bach: Cello Suite No. 1</p><a class="listen" href="https://open.spotify.com/search/Yo-Yo%20Ma%20Bach%20Cello%20Suite%20No.%201%20Prelude" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold rev" data-ch="full-colour" aria-label="Four in the Air">
+    <figure class="r"><img src="img/jump.jpg" alt="Four children jumping on a pebble beach under a pink and orange sky" style="object-position:50% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 104<span> / 117</span></p>
+      <h3 class="work r">Four in the Air</h3>
+      <p class="caption serif r">For one second, all four of them were flying. That second is still up there.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">The Beatles</p><p class="title">Here Comes the Sun</p><a class="listen" href="https://open.spotify.com/search/The%20Beatles%20Here%20Comes%20the%20Sun" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold" data-ch="full-colour" aria-label="Low Tide">
+    <figure class="r"><img src="img/lowtide.jpg" alt="Sun breaking through storm clouds over a quiet bay, footprints in the sand" style="object-position:50% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 105<span> / 117</span></p>
+      <h3 class="work r">Low Tide</h3>
+      <p class="caption serif r">The storm passed without a word. The footprints stayed.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Brian Eno</p><p class="title">An Ending (Ascent)</p><a class="listen" href="https://open.spotify.com/search/Brian%20Eno%20An%20Ending%20Ascent" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="chapter snap gold" id="golden-hour" data-ch="golden-hour">
+    <p class="num serif r">XV</p>
+    <h2 class="name r">GOLDEN HOUR</h2>
+    <p class="epi serif r">Every evening, the sky rehearses an ending.</p>
+  </section>
+  <section class="plate snap gold rev" data-ch="golden-hour" aria-label="First Light on the Mountain">
+    <figure class="r"><img src="img/gorge-child.jpg" alt="A child in a hooded jacket on a wooden balcony looking at mountains lit by sunrise" style="object-position:50% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 106<span> / 117</span></p>
+      <h3 class="work r">First Light on the Mountain</h3>
+      <p class="caption serif r">He saw the mountain before he could pronounce its name. He’ll remember it anyway.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Ólafur Arnalds</p><p class="title">Re:member</p><a class="listen" href="https://open.spotify.com/search/Olafur%20Arnalds%20Re%3Amember" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold" data-ch="golden-hour" aria-label="Burning Sky">
+    <figure class="r"><img src="img/burning-sky.jpg" alt="An orange sky on fire over silhouetted beach umbrellas, the sun on the horizon" style="object-position:50% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 107<span> / 117</span></p>
+      <h3 class="work r">Burning Sky</h3>
+      <p class="caption serif r">The sky caught fire. The umbrellas stood still and let it.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Tycho</p><p class="title">Awake</p><a class="listen" href="https://open.spotify.com/search/Tycho%20Awake" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold rev" data-ch="golden-hour" aria-label="The Path">
+    <figure class="r"><img src="img/boardwalk.jpg" alt="A wooden boardwalk across the sand toward the sea and a blazing sun" style="object-position:50% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 108<span> / 117</span></p>
+      <h3 class="work r">The Path</h3>
+      <p class="caption serif r">Every plank laid by someone who knew exactly where the light would be.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Fleetwood Mac</p><p class="title">Dreams</p><a class="listen" href="https://open.spotify.com/search/Fleetwood%20Mac%20Dreams" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold" data-ch="golden-hour" aria-label="Last Light">
+    <figure class="r"><img src="img/last-light.jpg" alt="The sun low over a rocky shore, gold light on the waves" style="object-position:45% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 109<span> / 117</span></p>
+      <h3 class="work r">Last Light</h3>
+      <p class="caption serif r">The sun touched the water once more, as if to say goodbye properly.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Explosions in the Sky</p><p class="title">Your Hand in Mine</p><a class="listen" href="https://open.spotify.com/search/Explosions%20in%20the%20Sky%20Your%20Hand%20in%20Mine" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold rev" data-ch="golden-hour" aria-label="The Watcher">
+    <figure class="r"><img src="img/watcher.jpg" alt="A lone figure watches a violet and red sunset beside a row of beach umbrellas" style="object-position:30% 60%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 110<span> / 117</span></p>
+      <h3 class="work r">The Watcher</h3>
+      <p class="caption serif r">He came to watch the sun go down. The sky decided to give him everything.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Coldplay</p><p class="title">Fix You</p><a class="listen" href="https://open.spotify.com/search/Coldplay%20Fix%20You" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold" data-ch="golden-hour" aria-label="Alone with It">
+    <figure class="r"><img src="img/orange-sun.jpg" alt="A lone silhouette before a perfect round sun sinking behind beach umbrellas" style="object-position:45% 70%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 111<span> / 117</span></p>
+      <h3 class="work r">Alone with It</h3>
+      <p class="caption serif r">The sun went down slowly, as if it knew he was the only one watching.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Moby</p><p class="title">Porcelain</p><a class="listen" href="https://open.spotify.com/search/Moby%20Porcelain" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold rev" data-ch="golden-hour" aria-label="Back from the Sea">
+    <figure class="r"><img src="img/swimmers.jpg" alt="Silhouetted men walking up the beach from the surf at sunset" style="object-position:45% 50%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 112<span> / 117</span></p>
+      <h3 class="work r">Back from the Sea</h3>
+      <p class="caption serif r">They came out of the water slowly, as if leaving it was the hardest part of the day.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Petit Biscuit</p><p class="title">Sunset Lover</p><a class="listen" href="https://open.spotify.com/search/Petit%20Biscuit%20Sunset%20Lover" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold" data-ch="golden-hour" aria-label="The Swing">
+    <figure class="r"><img src="img/swing.jpg" alt="A rope swing on a beach at dusk, an island on the horizon" style="object-position:50% 55%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 113<span> / 117</span></p>
+      <h3 class="work r">The Swing</h3>
+      <p class="caption serif r">Nobody on the swing tonight. It still points at the island.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Yann Tiersen</p><p class="title">La Valse d’Amélie</p><a class="listen" href="https://open.spotify.com/search/Yann%20Tiersen%20La%20Valse%20d%27Amelie" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap gold rev" data-ch="golden-hour" aria-label="Islet">
+    <figure class="r"><img src="img/islet.jpg" alt="A small rocky islet on a calm violet sea at dusk, a beach in front" style="object-position:50% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 114<span> / 117</span></p>
+      <h3 class="work r">Islet</h3>
+      <p class="caption serif r">A little island with three trees, keeping the evening company.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Brian Eno</p><p class="title">By This River</p><a class="listen" href="https://open.spotify.com/search/Brian%20Eno%20By%20This%20River" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="chapter snap " id="breath" data-ch="breath">
+    <p class="num serif r">XVI</p>
+    <h2 class="name r">BREATH</h2>
+    <p class="epi serif r">And after that, quiet.</p>
+  </section>
+  <section class="plate snap " data-ch="breath" aria-label="Saturday Night">
+    <figure class="r"><img src="img/bar.jpg" alt="A dim bar, a mirror full of people, a woman resting her head on a man’s shoulder" style="object-position:60% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 115<span> / 117</span></p>
+      <h3 class="work r">Saturday Night</h3>
+      <p class="caption serif r">A mirror full of strangers. In the corner, one head found its shoulder.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Mazzy Star</p><p class="title">Fade Into You</p><a class="listen" href="https://open.spotify.com/search/Mazzy%20Star%20Fade%20Into%20You" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap  rev" data-ch="breath" aria-label="Blue">
+    <figure class="r"><img src="img/blue-eyes.jpg" alt="A grey Siamese cat hidden in a blanket, only her blue eyes in colour" style="object-position:50% 45%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 116<span> / 117</span></p>
+      <h3 class="work r">Blue</h3>
+      <p class="caption serif r">The whole room turned grey. She kept her eyes.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Miles Davis</p><p class="title">Blue in Green</p><a class="listen" href="https://open.spotify.com/search/Miles%20Davis%20Blue%20in%20Green" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="plate snap " data-ch="breath" aria-label="Morning">
+    <figure class="r"><img src="img/morning.jpg" alt="A cat asleep on the sofa beside a bearded man, window light" style="object-position:50% 40%" loading="lazy"></figure>
+    <div class="text">
+      <p class="no r">No 117<span> / 117</span></p>
+      <h3 class="work r">Morning</h3>
+      <p class="caption serif r">And in the end, the light comes back through the window. She is still asleep.</p>
+      <div class="song r"><p class="label">Sound</p><p class="artist">Norah Jones</p><p class="title">Come Away With Me</p><a class="listen" href="https://open.spotify.com/search/Norah%20Jones%20Come%20Away%20With%20Me" target="_blank" rel="noopener">SPOTIFY <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a></div>
+    </div>
+  </section>
+  <section class="about snap" id="photographer" data-ch="breath">
+    <figure class="about-img r"><img src="img/portrait.jpg" alt="Portrait of Stefanos Papadakis, half his face in shadow" loading="lazy"></figure>
+    <div class="about-in">
+      <p class="label r">Behind the lens</p>
+      <h2 class="serif r">Stefanos Papadakis</h2>
+      <div class="rule r"></div>
+      <p class="serif lead r">Not a photographer. Just someone who stops walking when the light does something it shouldn’t.</p>
+      <p class="r">By day he lives among numbers and other people’s futures. The camera arrived later, almost by accident, as a way of keeping what words refused to hold.</p>
+      <p class="r">He won’t tell you where every picture was taken, or who is in them. Half of each story stays with him. The other half is yours now.</p>
+    </div>
+  </section>
+  <section class="outro snap" data-ch="breath">
+    <p class="serif r">Every face here is only half.<br>You carry the other half.</p>
+    <div class="rule r"></div>
+    <a class="back r" href="#top">BACK TO THE BEGINNING</a>
+    <footer><p class="copy"><b>© 2026 Stefanos Papadakis. All rights reserved.</b> All photographs, moving images and texts on this site are the property of the author. They may not be copied, downloaded, reproduced, published or used in any form without his written permission.</p></footer>
+  </section>
+</main>
+
+<script>
+document.documentElement.classList.add('js');
+(function(){
+  var reduce=false; try{reduce=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+  if(reduce){document.querySelectorAll('video').forEach(function(v){v.removeAttribute('autoplay');v.pause();v.controls=true;});}
+  var secs=document.querySelectorAll('.snap'), rail=document.querySelector('.rail'), links={};
+  rail.querySelectorAll('a').forEach(function(a){links[a.dataset.for]=a;});
+  function show(s){s.classList.add('in');s.querySelectorAll('.r').forEach(function(r){r.classList.add('in')});}
+  if(!('IntersectionObserver' in window)){secs.forEach(show);rail.classList.add('on');return;}
+  var io=new IntersectionObserver(function(en){en.forEach(function(x){
+    if(!x.isIntersecting) return;
+    var s=x.target; show(s); if(s.classList.contains('plate')) s.classList.add('seen');
+    var ch=s.dataset.ch; rail.classList.toggle('on',!!ch);
+    for(var k in links) links[k].removeAttribute('aria-current');
+    if(ch&&links[ch]) links[ch].setAttribute('aria-current','true');
+  });},{threshold:0.55});
+  secs.forEach(function(s){io.observe(s)});
+})();
+</script>
+</body>
+</html>
