@@ -1718,7 +1718,7 @@ window.TOH_FIREBASE = {
       if(on) mine.add(id); else mine.delete(id);
       counts[id]=Math.max(0,(counts[id]||0)+(on?1:-1)); paint();
       if(on){ b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
-      var u={}; u['votes/'+uid+'/'+id]=on?true:null; u['likes/'+id]=D.increment(on?1:-1);
+      var u={}; u['votes/'+uid+'/'+id]=on?D.serverTimestamp():null; u['likes/'+id]=D.increment(on?1:-1);
       D.update(D.ref(db),u).catch(function(){
         if(on) mine.delete(id); else mine.add(id); counts[id]=Math.max(0,(counts[id]||0)+(on?-1:1)); paint(); toast('COULD NOT SAVE, PLEASE TRY AGAIN');
       }).then(function(){ busy[id]=false; });
