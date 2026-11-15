@@ -1650,13 +1650,11 @@ window.TOH_FIREBASE = {
   var CFG=window.TOH_FIREBASE||{};
   if(CFG.databaseURL && CFG.apiKey){
   var V='10.12.2';
-  Promise.all([import('https://www.gstatic.com/firebasejs/'+V+'/firebase-app.js'),import('https://www.gstatic.com/firebasejs/'+V+'/firebase-database.js')]).then(function(m){
-    var A=m[0], D=m[1];
-    var db=D.getDatabase(A.initializeApp(CFG));
-    var LK='toh-likes';
-    function lsGet(){ try{ return JSON.parse(localStorage.getItem(LK)||'[]') }catch(e){ return [] } }
-    function lsSet(a){ try{ localStorage.setItem(LK,JSON.stringify(a)) }catch(e){} }
-    var mine=new Set(lsGet()), counts={}, ready=false;
+  Promise.all([import('https://www.gstatic.com/firebasejs/'+V+'/firebase-app.js'),import('https://www.gstatic.com/firebasejs/'+V+'/firebase-auth.js'),import('https://www.gstatic.com/firebasejs/'+V+'/firebase-database.js')]).then(function(m){
+    var A=m[0], U=m[1], D=m[2];
+    var app=A.initializeApp(CFG), auth=U.getAuth(app), db=D.getDatabase(app);
+    try{ localStorage.removeItem('toh-likes') }catch(e){}
+    var uid=null, mine=new Set(), counts={}, gotCounts=false, gotMine=false, ready=false;
     var works=[].map.call(document.querySelectorAll('section.plate[id]'),function(s){ return {id:s.id,title:s.getAttribute('aria-label'),th:s.dataset.thumb} });
     var t=document.getElementById('toast'), tm;
     function toast(msg){ t.textContent=msg; t.classList.remove('sel'); t.classList.add('on'); clearTimeout(tm); tm=setTimeout(function(){t.classList.remove('on')},2200); }
@@ -1676,22 +1674,25 @@ window.TOH_FIREBASE = {
         return '<li><a href="#'+r.id+'"><b>'+(i+1)+'</b><img src="'+r.th+'" alt="" loading="lazy" width="56" height="56"><span>'+tt+(mine.has(r.id)?' <small style="color:var(--acc)">♥</small>':'')+'</span><i>♥ '+r.v+'</i><em style="transform:scaleX('+(r.v/max).toFixed(3)+')"></em></a></li>';
       }).join('');
     }
-    D.onValue(D.ref(db,'likes'),function(snap){
-      counts=snap.val()||{};
-      var stale=[...mine].filter(function(id){ return !(counts[id]>0) });
-      if(stale.length){ stale.forEach(function(id){ mine.delete(id) }); lsSet([...mine]); }
-      if(!ready){ ready=true; document.documentElement.classList.add('likes-ok'); }
-      paint();
-    },function(){ /* unreachable: leave hearts hidden */ });
+    function maybeReady(){ if(!ready && gotCounts && gotMine){ ready=true; document.documentElement.classList.add('likes-ok'); } if(ready) paint(); }
+    var busy={};
+    U.onAuthStateChanged(auth,function(user){
+      if(!user || uid) return; uid=user.uid;
+      D.onValue(D.ref(db,'likes'),function(snap){ counts=snap.val()||{}; gotCounts=true; maybeReady(); },function(){});
+      D.onValue(D.ref(db,'votes/'+uid),function(snap){ var v=snap.val()||{}; mine=new Set(Object.keys(v)); gotMine=true; maybeReady(); },function(){});
+    });
+    U.signInAnonymously(auth).catch(function(){ /* sign-in unavailable: hearts stay hidden */ });
     document.addEventListener('click',function(e){
-      var b=e.target.closest&&e.target.closest('.like'); if(!b||!ready) return;
-      var id=b.dataset.id, on=!mine.has(id);
+      var b=e.target.closest&&e.target.closest('.like'); if(!b||!ready||!uid) return;
+      var id=b.dataset.id; if(busy[id]) return; busy[id]=true;
+      var on=!mine.has(id);
       if(on) mine.add(id); else mine.delete(id);
-      counts[id]=Math.max(0,(counts[id]||0)+(on?1:-1)); lsSet([...mine]); paint();
+      counts[id]=Math.max(0,(counts[id]||0)+(on?1:-1)); paint();
       if(on){ b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
-      D.set(D.ref(db,'likes/'+id),D.increment(on?1:-1)).catch(function(){
-        if(on) mine.delete(id); else mine.add(id); lsSet([...mine]); toast('COULD NOT SAVE, PLEASE TRY AGAIN');
-      });
+      var u={}; u['votes/'+uid+'/'+id]=on?true:null; u['likes/'+id]=D.increment(on?1:-1);
+      D.update(D.ref(db),u).catch(function(){
+        if(on) mine.delete(id); else mine.add(id); counts[id]=Math.max(0,(counts[id]||0)+(on?-1:1)); paint(); toast('COULD NOT SAVE, PLEASE TRY AGAIN');
+      }).then(function(){ busy[id]=false; });
     });
   }).catch(function(){});
   }
