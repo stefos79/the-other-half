@@ -1688,9 +1688,9 @@ window.TOH_FIREBASE = {
     function toast(msg){ t.textContent=msg; t.classList.remove('sel'); t.classList.add('on'); clearTimeout(tm); tm=setTimeout(function(){t.classList.remove('on')},2200); }
     function paint(){
       document.querySelectorAll('.like').forEach(function(b){
-        var id=b.dataset.id, on=mine.has(id), c=counts[id]||0;
+        var id=b.dataset.id, on=mine.has(id);
         b.classList.toggle('mine',on); b.setAttribute('aria-pressed',on?'true':'false');
-        b.querySelector('.n').textContent=c>0?c:'';
+        b.querySelector('.n').textContent='';
       });
       var list=document.querySelector('.llist');
       var rows=works.map(function(w){ return {id:w.id,title:w.title,th:w.th,v:counts[w.id]||0} }).filter(function(r){return r.v>0})
