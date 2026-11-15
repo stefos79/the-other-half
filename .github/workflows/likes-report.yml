@@ -1,0 +1,16 @@
+name: Likes report
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read public heart counts
+        run: |
+          curl -sS --fail "https://the-other-half-2160b-default-rtdb.europe-west1.firebasedatabase.app/likes.json" -o likes.json
+          echo "LIKES_JSON_START"
+          cat likes.json
+          echo
+          echo "LIKES_JSON_END"
