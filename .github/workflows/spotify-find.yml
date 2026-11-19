@@ -5,6 +5,10 @@ on:
       q:
         description: "Search words"
         required: true
+      urls:
+        description: "Extra pages to scan"
+        required: false
+        default: ""
 permissions:
   contents: read
 jobs:
@@ -14,10 +18,11 @@ jobs:
       - name: Search and verify
         env:
           Q: ${{ inputs.q }}
+          URLS: ${{ inputs.urls }}
         run: |
           UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124 Safari/537.36"
           enc=$(python3 -c "import urllib.parse,os;print(urllib.parse.quote('site:open.spotify.com/track '+os.environ['Q']))")
-          ids=$( (curl -sSL -A "$UA" "https://html.duckduckgo.com/html/?q=$enc"; curl -sSL -A "$UA" "https://www.bing.com/search?q=$enc") | grep -oE 'open\.spotify\.com(/intl-[a-z]+)?/track/[A-Za-z0-9]{22}' | grep -oE '[A-Za-z0-9]{22}$' | sort -u | head -15)
+          ids=$( (curl -sSL -A "$UA" "https://html.duckduckgo.com/html/?q=$enc"; curl -sSL -A "$UA" "https://www.bing.com/search?q=$enc"; for u in $URLS; do curl -sSL -A "$UA" "$u"; done) | grep -oE 'open\.spotify\.com(/intl-[a-z]+)?/track/[A-Za-z0-9]{22}' | grep -oE '[A-Za-z0-9]{22}$' | sort -u | head -15)
           for id in $ids; do
             t=$(curl -sS "https://open.spotify.com/oembed?url=https://open.spotify.com/track/$id" | python3 -c "import sys,json;print(json.load(sys.stdin).get('title',''))" 2>/dev/null)
             echo "FOUND $id | $t"
