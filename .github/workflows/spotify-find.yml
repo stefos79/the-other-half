@@ -20,13 +20,14 @@ jobs:
           Q: ${{ inputs.q }}
           URLS: ${{ inputs.urls }}
         run: |
+          set +e
           UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124 Safari/537.36"
           enc=$(python3 -c "import urllib.parse,os;print(urllib.parse.quote('site:open.spotify.com/track '+os.environ['Q']))")
           ids=$( (curl -sSL -A "$UA" "https://html.duckduckgo.com/html/?q=$enc"; curl -sSL -A "$UA" "https://www.bing.com/search?q=$enc"; for u in $URLS; do curl -sSL -A "$UA" "$u"; done) | grep -oE 'open\.spotify\.com(/intl-[a-z]+)?/track/[A-Za-z0-9]{22}' | grep -oE '[A-Za-z0-9]{22}$' | sort -u | head -15)
           dz=$(curl -sS "https://api.deezer.com/search?q=$(python3 -c "import urllib.parse,os;print(urllib.parse.quote(os.environ['Q']))")&limit=5" | python3 -c "import sys,json;[print(t['link']) for t in json.load(sys.stdin).get('data',[])]")
           for l in $dz; do
             echo "DEEZER $l"
-            sp=$(curl -sS "https://api.song.link/v1-alpha.1/links?url=$l" | grep -oE 'open\.spotify\.com/track/[A-Za-z0-9]{22}' | head -1 | grep -oE '[A-Za-z0-9]{22}$')
+            sp=$(curl -sS "https://api.song.link/v1-alpha.1/links?url=$l" | grep -oE 'open\.spotify\.com/track/[A-Za-z0-9]{22}' | head -1 | grep -oE '[A-Za-z0-9]{22}$'); echo "SONGLINK $(curl -sS "https://api.song.link/v1-alpha.1/links?url=$l" | head -c 300)"
             ids="$ids $sp"; sleep 2
           done
           ids=$(echo $ids | tr ' ' '\n' | sort -u)
