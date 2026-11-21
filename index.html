@@ -339,6 +339,33 @@ a{color:var(--fg)}
 @media (max-width:360px){ .vote .vl{letter-spacing:.1em} }
 #toast.up{bottom:auto;top:calc(20px + env(safe-area-inset-top));transform:translate(-50%,-12px)}
 #toast.up.on{transform:translate(-50%,0)}
+
+.menu-btn{position:fixed;top:calc(16px + env(safe-area-inset-top));right:16px;z-index:80;display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 16px 0 14px;border:1px solid rgba(238,234,227,.22);border-radius:999px;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:var(--fg);font:inherit;font-size:11px;letter-spacing:.24em;cursor:pointer;transition:border-color .2s}
+.menu-btn:hover,.menu-btn:focus-visible{border-color:var(--red)}
+.menu-btn i{display:flex;flex-direction:column;gap:4px;width:16px}
+.menu-btn i b{display:block;height:1.5px;background:currentColor;transition:transform .3s,opacity .3s}
+.menu-btn i b:last-child{width:10px;margin-left:auto}
+.menu-open .menu-btn i b:first-child{transform:translateY(2.75px) rotate(45deg)}
+.menu-open .menu-btn i b:last-child{width:16px;transform:translateY(-2.75px) rotate(-45deg)}
+.menu{position:fixed;inset:0;z-index:79;display:flex;align-items:center;background:rgba(0,0,0,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s}
+.menu-open .menu{opacity:1;visibility:visible}
+.menu-open{overflow:hidden}
+.menu-in{width:100%;max-width:1100px;margin:0 auto;padding:80px clamp(28px,8vw,120px)}
+.menu .label{color:var(--red);margin:0 0 clamp(18px,4vh,40px)}
+.menu ol{list-style:none;margin:0;padding:0;counter-reset:m}
+.menu li{counter-increment:m;border-top:1px solid var(--line)}
+.menu li:last-child{border-bottom:1px solid var(--line)}
+.menu a{display:flex;align-items:baseline;gap:clamp(16px,3vw,36px);padding:clamp(12px,2.6vh,26px) 0;color:var(--fg);text-decoration:none;transform:translateY(12px);opacity:0;transition:transform .5s,opacity .5s,color .2s}
+.menu-open .menu a{transform:none;opacity:1}
+.menu li:nth-child(2) a{transition-delay:.05s} .menu li:nth-child(3) a{transition-delay:.1s} .menu li:nth-child(4) a{transition-delay:.15s}
+.menu a::before{content:'0' counter(m);font-size:11px;letter-spacing:.2em;color:var(--mute);min-width:2.4em}
+.menu a span{font-size:clamp(30px,min(6vw,7.5vh),68px);line-height:1.05}
+.menu a small{margin-left:auto;font-size:11px;letter-spacing:.22em;color:var(--mute);text-transform:uppercase;white-space:nowrap}
+.menu a:hover span,.menu a:focus-visible span{color:var(--red);font-style:italic}
+.menu .mtop{display:none}
+.likes-ok .menu .mtop{display:list-item}
+@media (max-width:520px){ .menu-btn .ml{display:none} .menu-btn{padding:0 14px} .menu a small{display:none} }
+@media (orientation:landscape) and (max-height:540px){ .menu-btn{top:10px;right:10px;min-height:36px} .menu-in{padding:40px 48px} .menu a{padding:8px 0} .menu a span{font-size:clamp(22px,7vh,36px)} }
 .likes-ok .lovedli{display:block}
 .likes-ok .loved{display:flex}
 .loved{height:calc(100svh - var(--ph,0px));overflow-y:auto;align-items:safe center;justify-content:center;padding:24px clamp(24px,8vw,140px);container-type:size}
@@ -364,6 +391,18 @@ a{color:var(--fg)}
 </style>
 </head>
 <body>
+<button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><i aria-hidden="true"><b></b><b></b></i><span class="ml">MENU</span></button>
+<nav class="menu" id="menu" aria-label="Menu" aria-hidden="true">
+  <div class="menu-in">
+    <p class="label">The Other Half</p>
+    <ol>
+      <li><a href="#top"><span class="serif">Home</span><small>The cover</small></a></li>
+      <li><a href="#contents"><span class="serif">Contents</span><small>16 chapters · 127 works</small></a></li>
+      <li class="mtop"><a href="#most-loved"><span class="serif">Top Ten</span><small>Chosen by you</small></a></li>
+      <li><a href="#photographer"><span class="serif">Behind the Lens</span><small>Stefanos Papadakis</small></a></li>
+    </ol>
+  </div>
+</nav>
 <div class="grain" aria-hidden="true"></div>
 
 <nav class="rail" aria-label="Chapters">
@@ -1683,6 +1722,15 @@ a{color:var(--fg)}
   </section>
 </main>
 
+<script>
+(function(){
+  var h=document.documentElement, b=document.querySelector('.menu-btn'), m=document.getElementById('menu');
+  function set(o){ h.classList.toggle('menu-open',o); b.setAttribute('aria-expanded',o?'true':'false'); m.setAttribute('aria-hidden',o?'false':'true'); if(o){ var f=m.querySelector('a'); f&&f.focus({preventScroll:true}); } }
+  b.addEventListener('click',function(){ set(!h.classList.contains('menu-open')); });
+  m.addEventListener('click',function(e){ var a=e.target.closest('a'); if(a){ e.preventDefault(); set(false); var id=a.getAttribute('href').slice(1), el=document.getElementById(id); if(el){ requestAnimationFrame(function(){ el.scrollIntoView({behavior:'instant',block:'start'}); try{ history.replaceState(null,'','#'+id) }catch(x){} }); } } else if(e.target===m) set(false); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape' && h.classList.contains('menu-open')){ set(false); b.focus(); } });
+})();
+</script>
 <div id="toast" role="status" aria-live="polite"></div>
 <div id="player" role="region" aria-label="Music player">
   <div class="now"></div>
