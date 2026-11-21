@@ -56,6 +56,7 @@ jobs:
               aid=$(curl -sS -A "TOH-bot/1.0 (stefos79@users.noreply.github.com)" "https://musicbrainz.org/ws/2/artist/$mb?inc=url-rels&fmt=json" | grep -oE 'open\.spotify\.com/artist/[A-Za-z0-9]{22}' | head -1 | grep -oE '[A-Za-z0-9]{22}$')
               echo "MUSICBRAINZ $mb"
             fi
+            echo "WDRAW $(curl -sS -A 'TOH-bot/1.0 (stefos79@users.noreply.github.com)' "https://www.wikidata.org/w/api.php?action=wbgetentities&sites=enwiki&titles=$ARTIST&props=claims&format=json" | head -c 300)"
             echo "ARTIST $aid"
             curl -sS -A "$UA" "https://open.spotify.com/embed/artist/$aid" | python3 -c "
           import sys,re,json
