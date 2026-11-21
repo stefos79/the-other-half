@@ -49,6 +49,13 @@ jobs:
           for e in d.get('entities',{}).values():
               for c in e.get('claims',{}).get('P1902',[]):
                   print(c['mainsnak']['datavalue']['value'])" | head -1)
+            if [ -z "$aid" ]; then
+              q=$(python3 -c "import urllib.parse,os;print(urllib.parse.quote('artist:\"'+os.environ['ARTIST'].replace('_',' ')+'\"'))")
+              mb=$(curl -sS -A "TOH-bot/1.0 (stefos79@users.noreply.github.com)" "https://musicbrainz.org/ws/2/artist/?query=$q&limit=1&fmt=json" | python3 -c "import sys,json;print(json.load(sys.stdin)['artists'][0]['id'])")
+              sleep 1
+              aid=$(curl -sS -A "TOH-bot/1.0 (stefos79@users.noreply.github.com)" "https://musicbrainz.org/ws/2/artist/$mb?inc=url-rels&fmt=json" | grep -oE 'open\.spotify\.com/artist/[A-Za-z0-9]{22}' | head -1 | grep -oE '[A-Za-z0-9]{22}$')
+              echo "MUSICBRAINZ $mb"
+            fi
             echo "ARTIST $aid"
             curl -sS -A "$UA" "https://open.spotify.com/embed/artist/$aid" | python3 -c "
           import sys,re,json
