@@ -329,7 +329,7 @@ a{color:var(--fg)}
 .vote.mine{background:var(--red);border-color:var(--red);color:#fff}
 .vote.mine svg{color:#fff}
 .vote.mine svg path{fill:currentColor}
-.vote.nudge{animation:nudge 1.6s ease 2}
+.vote.nudge{animation:nudge 1.6s ease 5}
 @keyframes nudge{0%,100%{box-shadow:0 0 0 0 rgba(229,57,44,0)}40%{box-shadow:0 0 0 10px rgba(229,57,44,.25)}}
 .burst{position:absolute;left:50%;top:50%;width:120px;height:120px;margin:-60px 0 0 -60px;pointer-events:none;color:#fff;filter:drop-shadow(0 6px 20px rgba(0,0,0,.6));animation:burst .9s ease forwards;z-index:5}
 .burst path{fill:var(--red)}
@@ -337,6 +337,8 @@ a{color:var(--fg)}
 @media (max-width:820px){ .ctas{margin:4px 0 0 auto;gap:8px} .vote{padding:10px 16px 10px 13px} }
 @media (orientation:landscape) and (max-height:540px){ .ctas{margin:4px 0 0 auto;gap:8px} .vote{padding:6px 14px 6px 11px;min-height:36px} }
 @media (max-width:360px){ .vote .vl{letter-spacing:.1em} }
+#toast.up{bottom:auto;top:calc(20px + env(safe-area-inset-top));transform:translate(-50%,-12px)}
+#toast.up.on{transform:translate(-50%,0)}
 .likes-ok .lovedli{display:block}
 .likes-ok .loved{display:flex}
 .loved{height:calc(100svh - var(--ph,0px));overflow-y:auto;align-items:safe center;justify-content:center;padding:24px clamp(24px,8vw,140px);container-type:size}
@@ -398,7 +400,7 @@ a{color:var(--fg)}
     </div>
     <div class="foot">
     <a class="latest" href="#behind-the-blinds"><img src="img/thumbs/blinds.jpg" alt="" width="56" height="56"><span><small>Latest addition</small><b class="serif">Behind the Blinds</b></span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h10M6.5 1.5 11 6l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a>
-    <p class="updated">Last updated · 20 November 2026</p>
+    <p class="updated">Last updated · 21 November 2026</p>
     <a class="begin" href="#contents">SCROLL TO BEGIN <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1v10M1.5 6.5 6 11l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></a>
     </div>
   </div>
@@ -1775,7 +1777,7 @@ window.TOH_FIREBASE = {
     var uid=null, mine=new Set(), counts={}, gotCounts=false, gotMine=false, ready=false;
     var works=[].map.call(document.querySelectorAll('section.plate[id]'),function(s){ return {id:s.id,title:s.getAttribute('aria-label'),th:s.dataset.thumb} });
     var t=document.getElementById('toast'), tm;
-    function toast(msg){ t.textContent=msg; t.classList.remove('sel'); t.classList.add('on'); clearTimeout(tm); tm=setTimeout(function(){t.classList.remove('on')},2200); }
+    function toast(msg,ms,up){ t.textContent=msg; t.classList.remove('sel'); t.classList.toggle('up',!!up); t.classList.add('on'); clearTimeout(tm); tm=setTimeout(function(){t.classList.remove('on')},ms||2200); }
     function paint(){
       document.querySelectorAll('.like').forEach(function(b){
         var id=b.dataset.id, on=mine.has(id);
@@ -1816,7 +1818,7 @@ window.TOH_FIREBASE = {
     var io=new IntersectionObserver(function(es){ es.forEach(function(en){
       if(!en.isIntersecting||nudged||!ready) return; seen++;
       if(seen>=3 && mine.size===0){ nudged=true; try{sessionStorage.setItem('toh-nudge','1')}catch(e){}
-        var b=en.target.querySelector('.vote'); if(b){ b.classList.add('nudge'); } toast('LIKE IT? DOUBLE-TAP OR PRESS ♥ VOTE. IT’S ANONYMOUS'); }
+        var b=en.target.querySelector('.vote'); if(b){ b.classList.add('nudge'); } toast('LIKE IT? DOUBLE-TAP OR PRESS ♥ VOTE. IT’S ANONYMOUS',8000,true); }
     }); },{threshold:.7});
     document.querySelectorAll('section.plate').forEach(function(s){ io.observe(s); });
     document.addEventListener('click',function(e){
