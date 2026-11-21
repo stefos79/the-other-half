@@ -1757,6 +1757,7 @@ a{color:var(--fg)}
       <h2 class="serif">Chosen by you</h2>
       <ol class="llist" aria-live="polite"><li class="lmsg">Counting hearts…</li></ol>
       <p class="lnote">Tap <span>♡</span> on every work you love. Tap again to take it back.</p>
+      <p class="lnote">Votes are anonymous. With each vote we keep only the device type and how you arrived, never who you are.</p>
     </div>
   </section>
   <section class="about snap" id="photographer" data-ch="breath">
@@ -1937,7 +1938,7 @@ window.TOH_FIREBASE = {
       if(!ready) return; var pl=f.closest('.plate'); var id=pl.id;
       if(getComputedStyle(f).position==='static') f.style.position='relative';
       f.insertAdjacentHTML('beforeend',HEART); var h=f.lastElementChild; setTimeout(function(){h.remove()},950);
-      if(!mine.has(id)){ var b=pl.querySelector('.vote'); if(b) b.click(); }
+      if(!mine.has(id)){ var b=pl.querySelector('.vote'); if(b){ window.__toh&&(window.__toh.how='dbltap'); b.click(); } }
     }
     var seen=0, nudged=false;
     try{ nudged=sessionStorage.getItem('toh-nudge')==='1' }catch(e){}
@@ -1957,10 +1958,30 @@ window.TOH_FIREBASE = {
       var u={}; u['votes/'+uid+'/'+id]=on?D.serverTimestamp():null; u['likes/'+id]=D.increment(on?1:-1);
       D.update(D.ref(db),u).catch(function(){
         if(on) mine.delete(id); else mine.add(id); counts[id]=Math.max(0,(counts[id]||0)+(on?-1:1)); paint(); toast('COULD NOT SAVE, PLEASE TRY AGAIN');
-      }).then(function(){ busy[id]=false; });
+      }).then(function(){ busy[id]=false;
+        var T=window.__toh; if(!on||!T) return; var how=T.how; T.how='button';
+        D.set(D.ref(db,'meta/'+uid+'/'+id),{t:D.serverTimestamp(),dev:T.dev,os:T.os,br:T.br,ref:T.ref,lang:T.lang,tz:T.tz,how:how,heard:!!T.heard[id],entry:T.entry,seen:Object.keys(T.seen).length}).catch(function(){});
+      });
     });
   }).catch(function(){});
   }
+</script>
+<script>
+(function(){
+  var T=window.__toh={heard:{},seen:{},how:'button',entry:(location.hash||'#top').slice(1,41)};
+  document.addEventListener('click',function(e){ var a=e.target.closest&&e.target.closest('a.listen'); if(a){ var s=a.closest('.plate'); if(s) T.heard[s.id]=1; } },true);
+  var io=new IntersectionObserver(function(es){ es.forEach(function(en){ if(en.isIntersecting) T.seen[en.target.id]=1; }); },{threshold:.6});
+  document.querySelectorAll('section.plate').forEach(function(s){ io.observe(s); });
+  var ua=navigator.userAgent||'', r=(document.referrer||'').toLowerCase();
+  var coarse=window.matchMedia&&matchMedia('(pointer:coarse)').matches, sm=Math.min(screen.width,screen.height);
+  var ipad=/Macintosh/.test(ua)&&navigator.maxTouchPoints>1;
+  T.dev=coarse?(sm<600?'phone':'tablet'):'computer';
+  T.os=/iPhone|iPad|iPod/.test(ua)||ipad?'iOS':/Android/.test(ua)?'Android':/Windows/.test(ua)?'Windows':/Mac OS X/.test(ua)?'macOS':/Linux/.test(ua)?'Linux':'other';
+  T.br=/Instagram/.test(ua)?'Instagram app':/FBAN|FBAV/.test(ua)?'Facebook app':/Edg\//.test(ua)?'Edge':/CriOS|Chrome\//.test(ua)?'Chrome':/FxiOS|Firefox\//.test(ua)?'Firefox':/Safari\//.test(ua)?'Safari':'other';
+  T.ref=/Instagram/.test(ua)||r.indexOf('instagram.')>-1?'instagram':/FBAN|FBAV/.test(ua)||r.indexOf('facebook.')>-1?'facebook':r.indexOf('google.')>-1?'google':!r||r.indexOf(location.host)>-1?'direct':'other';
+  T.lang=(navigator.language||'').slice(0,8);
+  try{ T.tz=(Intl.DateTimeFormat().resolvedOptions().timeZone||'').slice(0,40) }catch(e){ T.tz='' }
+})();
 </script>
 <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
 <script data-goatcounter="https://stef79.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
