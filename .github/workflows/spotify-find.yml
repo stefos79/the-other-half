@@ -35,7 +35,7 @@ jobs:
             sp=$(curl -sS "https://api.song.link/v1-alpha.1/links?url=$l" | grep -oE 'open\.spotify\.com/track/[A-Za-z0-9]{22}' | head -1 | grep -oE '[A-Za-z0-9]{22}$'); echo "SONGLINK $(curl -sS "https://api.song.link/v1-alpha.1/links?url=$l" | head -c 300)"
             ids="$ids $sp"; sleep 2
           done
-          wd=$(curl -sS -A "TOH-bot/1.0" "https://www.wikidata.org/w/api.php?action=wbgetentities&sites=enwiki|dewiki&titles=$(python3 -c "import urllib.parse,os;print(urllib.parse.quote(os.environ['Q'].split(' Kalk')[0].replace(' ','_')))")&props=claims&format=json" | python3 -c "
+          wd=$(curl -sS -A "TOH-bot/1.0 (stefos79@users.noreply.github.com)" "https://www.wikidata.org/w/api.php?action=wbgetentities&sites=enwiki|dewiki&titles=$(python3 -c "import urllib.parse,os;print(urllib.parse.quote(os.environ['Q'].split(' Kalk')[0].replace(' ','_')))")&props=claims&format=json" | python3 -c "
           import sys,json
           d=json.load(sys.stdin)
           for e in d.get('entities',{}).values():
@@ -43,7 +43,7 @@ jobs:
                   print(c['mainsnak']['datavalue']['value'])")
           echo "WIKIDATA $wd"
           if [ -n "$ARTIST" ]; then
-            aid=$(curl -sS -A "TOH-bot/1.0" "https://www.wikidata.org/w/api.php?action=wbgetentities&sites=enwiki&titles=$ARTIST&props=claims&format=json" | python3 -c "
+            aid=$(curl -sS -A "TOH-bot/1.0 (stefos79@users.noreply.github.com)" "https://www.wikidata.org/w/api.php?action=wbgetentities&sites=enwiki&titles=$ARTIST&props=claims&format=json" | python3 -c "
           import sys,json
           d=json.load(sys.stdin)
           for e in d.get('entities',{}).values():
@@ -56,7 +56,6 @@ jobs:
               aid=$(curl -sS -A "TOH-bot/1.0 (stefos79@users.noreply.github.com)" "https://musicbrainz.org/ws/2/artist/$mb?inc=url-rels&fmt=json" | grep -oE 'open\.spotify\.com/artist/[A-Za-z0-9]{22}' | head -1 | grep -oE '[A-Za-z0-9]{22}$')
               echo "MUSICBRAINZ $mb"
             fi
-            echo "WDRAW $(curl -sS -A 'TOH-bot/1.0 (stefos79@users.noreply.github.com)' "https://www.wikidata.org/w/api.php?action=wbgetentities&sites=enwiki&titles=$ARTIST&props=claims&format=json" | head -c 300)"
             echo "ARTIST $aid"
             curl -sS -A "$UA" "https://open.spotify.com/embed/artist/$aid" | python3 -c "
           import sys,re,json
