@@ -329,7 +329,7 @@ a{color:var(--fg)}
 .vote.mine{background:var(--red);border-color:var(--red);color:#fff}
 .vote.mine svg{color:#fff}
 .vote.mine svg path{fill:currentColor}
-.vote.nudge{animation:nudge 1.6s ease 5}
+.vote.nudge{animation:nudge 1.6s ease 9}
 @keyframes nudge{0%,100%{box-shadow:0 0 0 0 rgba(229,57,44,0)}40%{box-shadow:0 0 0 10px rgba(229,57,44,.25)}}
 .burst{position:absolute;left:50%;top:50%;width:120px;height:120px;margin:-60px 0 0 -60px;pointer-events:none;color:#fff;filter:drop-shadow(0 6px 20px rgba(0,0,0,.6));animation:burst .9s ease forwards;z-index:5}
 .burst path{fill:var(--red)}
@@ -1817,8 +1817,8 @@ window.TOH_FIREBASE = {
     try{ nudged=sessionStorage.getItem('toh-nudge')==='1' }catch(e){}
     var io=new IntersectionObserver(function(es){ es.forEach(function(en){
       if(!en.isIntersecting||nudged||!ready) return; seen++;
-      if(seen>=3 && mine.size===0){ nudged=true; try{sessionStorage.setItem('toh-nudge','1')}catch(e){}
-        var b=en.target.querySelector('.vote'); if(b){ b.classList.add('nudge'); } toast('LIKE IT? DOUBLE-TAP OR PRESS ♥ VOTE. IT’S ANONYMOUS',8000,true); }
+      if(seen>=3){ nudged=true; try{sessionStorage.setItem('toh-nudge','1')}catch(e){}
+        var b=en.target.querySelector('.vote'); if(b){ b.classList.add('nudge'); } toast('LIKE IT? DOUBLE-TAP OR PRESS ♥ VOTE. IT’S ANONYMOUS',15000,true); }
     }); },{threshold:.7});
     document.querySelectorAll('section.plate').forEach(function(s){ io.observe(s); });
     document.addEventListener('click',function(e){
